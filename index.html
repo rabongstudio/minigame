@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="euc-kr">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>¹Ì´Ï°ÔÀÓÁ¸</title>
+  <title>ë¯¸ë‹ˆê²Œì„ì¡´</title>
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
   <style>
     body {
@@ -67,19 +67,19 @@
   </style>
 </head>
 <body>
-  <h1>&#127918; OK ¹Ì´Ï°ÔÀÓÁ¸</h1>
+  <h1>&#127918; OK ë¯¸ë‹ˆê²Œì„ì¡´</h1>
 
   <div id="register-area" style="display:none">
-    <h3>Ã¹ ¹æ¹®À» È¯¿µÇÕ´Ï´Ù!</h3>
-    <input type="text" id="school" placeholder="ÇĞ±³¸íÀ» ÀÔ·ÂÇÏ¼¼¿ä" />
-    <input type="text" id="nickname" placeholder="´Ğ³×ÀÓÀ» ÀÔ·ÂÇÏ¼¼¿ä" />
-    <button class="btn" onclick="registerUser()">µî·Ï</button>
+    <h3>ì²« ë°©ë¬¸ì„ í™˜ì˜í•©ë‹ˆë‹¤!</h3>
+    <input type="text" id="school" placeholder="í•™êµëª…ì„ ì…ë ¥í•˜ì„¸ìš”" />
+    <input type="text" id="nickname" placeholder="ë‹‰ë„¤ì„ì„ ì…ë ¥í•˜ì„¸ìš”" />
+    <button class="btn" onclick="registerUser()">ë“±ë¡</button>
   </div>
 
   <div class="game-list">
-    <button class="game-btn" onclick="goToClickGame()">&#128147; Å¬¸¯ Å¸ÀÌ¹Ö °ÔÀÓ</button>
-    <button class="game-btn" onclick="alert('ÁØºñ ÁßÀÔ´Ï´Ù.')">&#128290; ¼ıÀÚ ¼ø¼­ °ÔÀÓ</button>
-    <button class="game-btn" onclick="alert('ÁØºñ ÁßÀÔ´Ï´Ù.')">&#129504; ±â¾ï·Â °ÔÀÓ</button>
+    <button class="game-btn" onclick="goToClickGame()">&#128147; í´ë¦­ íƒ€ì´ë° ê²Œì„</button>
+    <button class="game-btn" onclick="alert('ì¤€ë¹„ ì¤‘ì…ë‹ˆë‹¤.')">&#128290; ìˆ«ì ìˆœì„œ ê²Œì„</button>
+    <button class="game-btn" onclick="alert('ì¤€ë¹„ ì¤‘ì…ë‹ˆë‹¤.')">&#129504; ê¸°ì–µë ¥ ê²Œì„</button>
   </div>
 
   <script>
@@ -111,7 +111,7 @@
       const school = document.getElementById("school").value.trim();
       const nickname = document.getElementById("nickname").value.trim();
       if (!school || !nickname) {
-        alert("ÇĞ±³¸í°ú ´Ğ³×ÀÓÀ» ¸ğµÎ ÀÔ·ÂÇØÁÖ¼¼¿ä.");
+        alert("í•™êµëª…ê³¼ ë‹‰ë„¤ì„ì„ ëª¨ë‘ ì…ë ¥í•´ì£¼ì„¸ìš”.");
         return;
       }
 
@@ -124,16 +124,16 @@
 			  });
 			  const dupData = await dupRes.json();
 			  if (dupData.length > 0) {
-			    alert("°°Àº ÇĞ±³¿¡¼­ ÀÌ¹Ì »ç¿ë ÁßÀÎ ´Ğ³×ÀÓÀÔ´Ï´Ù.");
+			    alert("ê°™ì€ í•™êµì—ì„œ ì´ë¯¸ ì‚¬ìš© ì¤‘ì¸ ë‹‰ë„¤ì„ì…ë‹ˆë‹¤.");
 			    return;
 			  }
 			} catch (e) {
-			  alertBox.textContent = "Áßº¹ °Ë»ç Áß ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù.";
+			  alertBox.textContent = "ì¤‘ë³µ ê²€ì‚¬ ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.";
 			  return;
 			}
       const uuid = getUUID();
 
-      // Supabase ÀúÀå
+      // Supabase ì €ì¥
       try {
         await fetch(`${SUPABASE_URL}/rest/v1/players`, {
           method: "POST",
@@ -146,7 +146,7 @@
           body: JSON.stringify({ uuid, school, nickname })
         });
       } catch (e) {
-        console.error("µî·Ï ¿À·ù", e);
+        console.error("ë“±ë¡ ì˜¤ë¥˜", e);
       }
 
 			localStorage.setItem("school", school);
@@ -157,7 +157,7 @@
 
     function goToClickGame() {
       if (isFirstVisit()) {
-        alert("¸ÕÀú ÇĞ±³¸í°ú ´Ğ³×ÀÓÀ» µî·ÏÇØÁÖ¼¼¿ä.");
+        alert("ë¨¼ì € í•™êµëª…ê³¼ ë‹‰ë„¤ì„ì„ ë“±ë¡í•´ì£¼ì„¸ìš”.");
         document.getElementById("register-area").style.display = "block";
         return;
       }
@@ -165,7 +165,7 @@
     }
 
     window.onload = () => {
-      getUUID(); // uuid »ı¼º
+      getUUID(); // uuid ìƒì„±
       if (isFirstVisit()) {
         document.getElementById("register-area").style.display = "block";
       }
