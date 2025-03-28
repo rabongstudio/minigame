@@ -73,9 +73,10 @@
     th {
       background-color: #f0f4ff;
     }
-    tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
+	  .my-row {
+	    background-color: #fffbcc !important; /* 연노랑 */
+	    font-weight: bold;
+	  }
 
 		.firework {
 		    position: fixed;
@@ -120,20 +121,7 @@
       </thead>
       <tbody id="rank-body"></tbody>
     </table>
-
-    <h2>&#127979; 학교별 평균 순위</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>순위</th>
-          <th>학교명</th>
-          <th>평균 반응속도</th>
-        </tr>
-      </thead>
-      <tbody id="school-body"></tbody>
-    </table>
-
-    <h2 id="school-rank-title">&#127891; 나의 학교 순위</h2>
+		<h2 id="school-rank-title">&#127891; 나의 학교 순위</h2>
     <table>
       <thead>
         <tr>
@@ -144,6 +132,19 @@
       </thead>
       <tbody id="my-school-body"></tbody>
     </table>
+    <h2>&#127979; 학교별 평균 순위</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>순위</th>
+          <th>학교명</th>
+          <th>평균 속도</th>
+        </tr>
+      </thead>
+      <tbody id="school-body"></tbody>
+    </table>
+
+    
   </div>
 
   <script>
@@ -302,26 +303,62 @@
 			loadMySchoolRank();
     }
 
-    async function loadLeaderboard() {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/number_scores?select=nickname,school,score&order=score.asc&limit=10`, {
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`
-        }
-      });
-
-      const scores = await res.json();
-      const rankBody = document.getElementById("rank-body");
-      rankBody.innerHTML = "";
-
-      scores.forEach((entry, i) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `<td>${i + 1}</td><td>${entry.nickname}</td><td>${entry.school}</td><td>${entry.score.toFixed(2)}s</td>`;
-        rankBody.appendChild(row);
-      });
-    }
+		async function loadLeaderboard() {
+		  const uuid = getUUID();
+		  const nickname = localStorage.getItem("nickname");
+		  const school = localStorage.getItem("school");
+		
+		  // 전체 상위 10위 가져오기
+		  const topRes = await fetch(`${SUPABASE_URL}/rest/v1/number_scores?select=uuid,nickname,school,score&order=score.asc&limit=10`, {
+		    headers: {
+		      apikey: SUPABASE_KEY,
+		      Authorization: `Bearer ${SUPABASE_KEY}`
+		    }
+		  });
+		  const topScores = await topRes.json();
+		
+		  // 내 순위 전체에서 가져오기
+		  const allRes = await fetch(`${SUPABASE_URL}/rest/v1/number_scores?select=uuid,nickname,school,score&order=score.asc`, {
+		    headers: {
+		      apikey: SUPABASE_KEY,
+		      Authorization: `Bearer ${SUPABASE_KEY}`
+		    }
+		  });
+		  const allScores = await allRes.json();
+		
+		  const rankBody = document.getElementById("rank-body");
+		  rankBody.innerHTML = "";
+		
+		  let myRank = -1;
+		  allScores.forEach((entry, i) => {
+		    if (entry.uuid === uuid) {
+		      myRank = i + 1;
+		    }
+		  });
+		
+		  topScores.forEach((entry, i) => {
+		    const row = document.createElement("tr");
+		    row.innerHTML = `<td>${i + 1}</td><td>${entry.nickname}</td><td>${entry.school}</td><td>${entry.score.toFixed(2)}s</td>`;
+		    if (entry.uuid === uuid) {
+		      row.classList.add("my-row");
+		    }
+		    rankBody.appendChild(row);
+		  });
+		
+		  // 10위 밖일 경우 내 순위 맨 아래 추가
+		  if (myRank > 10) {
+		    const myEntry = allScores.find(entry => entry.uuid === uuid);
+		    if (myEntry) {
+		      const row = document.createElement("tr");
+		      row.innerHTML = `<td>${myRank}</td><td>${myEntry.nickname}</td><td>${myEntry.school}</td><td>${myEntry.score.toFixed(2)}s</td>`;
+		      row.classList.add("my-row");
+		      rankBody.appendChild(row);
+		    }
+		  }
+		}
 
     async function loadSchoolRank() {
+			const uuid = getUUID();
       const res = await fetch(`${SUPABASE_URL}/rest/v1/number_scores?select=school,score`, {
         headers: {
           apikey: SUPABASE_KEY,
@@ -343,6 +380,9 @@
       schoolBody.innerHTML = "";
       averages.forEach((entry, i) => {
         const row = document.createElement("tr");
+				if (entry.school === school) {
+		      row.classList.add("my-row"); // ? 본인인 경우 스타일 클래스 추가
+		    }
         row.innerHTML = `<td>${i + 1}</td><td>${entry.school}</td><td>${entry.avg}s</td>`;
         schoolBody.appendChild(row);
       });
@@ -351,7 +391,7 @@
     async function loadMySchoolRank() {
       const school = localStorage.getItem("school");
       if (!school) return;
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/number_scores?school=eq.${encodeURIComponent(school)}&select=nickname,score&order=score.asc`, {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/number_scores?school=eq.${encodeURIComponent(school)}&select=uuid,nickname,score&order=score.asc`, {
         headers: {
           apikey: SUPABASE_KEY,
           Authorization: `Bearer ${SUPABASE_KEY}`
@@ -362,6 +402,9 @@
       tbody.innerHTML = "";
       data.forEach((entry, i) => {
         const row = document.createElement("tr");
+				if (entry.uuid === uuid) {
+		      row.classList.add("my-row"); // ? 본인인 경우 스타일 클래스 추가
+		    }
         row.innerHTML = `<td>${i + 1}</td><td>${entry.nickname}</td><td>${entry.score.toFixed(2)}s</td>`;
         tbody.appendChild(row);
       });
