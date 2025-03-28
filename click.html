@@ -3,7 +3,7 @@
 <head>
   <meta charset="euc-kr">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>¹Ì´Ï°ÔÀÓÁ¸</title>
+  <title>ë¯¸ë‹ˆê²Œì„ì¡´</title>
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
   <style>
     html, body {
@@ -120,48 +120,71 @@
 		  background-color: #fff9f9;
 		}
 
+		.firework {
+		    position: fixed;
+		    width: 6px;
+		    height: 6px;
+		    background: #fff;
+		    border-radius: 50%;
+		    animation: explode 700ms ease-out forwards;
+		    pointer-events: none;
+		    z-index: 9999;
+		  }
+		
+		  @keyframes explode {
+		    0% {
+		      opacity: 1;
+		      transform: scale(1);
+		    }
+		    100% {
+		      opacity: 0;
+		      transform: scale(4) translate(0, -50px);
+		    }
+		  }
+
+
   </style>
 </head>
 <body>
-  <h1 style="font-size: 2rem;">&#9889; Å¬¸¯ Å¸ÀÌ¹Ö °ÔÀÓ</h1>
+  <h1 style="font-size: 2rem;">&#9889; í´ë¦­ íƒ€ì´ë° ê²Œì„</h1>
   <div id="hearts"></div>
   <div id="game-area">
-    <button class="btn" id="start-btn" onclick="startGame()">°ÔÀÓ ½ÃÀÛ</button>
+    <button class="btn" id="start-btn" onclick="startGame()">ê²Œì„ ì‹œì‘</button>
   </div>
   <div id="leaderboard">
-    <h2 style="font-size: 1.5rem;">&#127942; Àü±¹ ¼øÀ§</h2>
+    <h2 style="font-size: 1.5rem;">&#127942; ì „êµ­ ìˆœìœ„</h2>
     <table id="rank-table">
       <thead>
         <tr>
-          <th>¼øÀ§</th>
-          <th>ÀÌ¸§</th>
-          <th>ÇĞ±³</th>
-          <th>Á¡¼ö</th>
+          <th>ìˆœìœ„</th>
+          <th>ì´ë¦„</th>
+          <th>í•™êµ</th>
+          <th>ì ìˆ˜</th>
         </tr>
       </thead>
       <tbody id="rank-body"></tbody>
     </table>
 
-		<h2 style="font-size: 1.5rem; margin-top: 40px;" id="school-rank-title">&#127891; ³ªÀÇ ÇĞ±³ ¼øÀ§</h2>
+		<h2 style="font-size: 1.5rem; margin-top: 40px;" id="school-rank-title">&#127891; ë‚˜ì˜ í•™êµ ìˆœìœ„</h2>
 
 		<table id="my-school-table">
 		  <thead>
 		    <tr>
-		      <th>¼øÀ§</th>
-		      <th>´Ğ³×ÀÓ</th>
-		      <th>Á¡¼ö</th>
+		      <th>ìˆœìœ„</th>
+		      <th>ë‹‰ë„¤ì„</th>
+		      <th>ì ìˆ˜</th>
 		    </tr>
 		  </thead>
 		  <tbody id="my-school-body"></tbody>
 		</table>
 
-		<h2 style="font-size: 1.5rem; margin-top: 40px;">&#127979; ÇĞ±³º° Æò±Õ ¼øÀ§</h2>
+		<h2 style="font-size: 1.5rem; margin-top: 40px;">&#127979; í•™êµë³„ í‰ê·  ìˆœìœ„</h2>
 		<table id="school-table">
 		  <thead>
 		    <tr>
-		      <th>¼øÀ§</th>
-		      <th>ÇĞ±³¸í</th>
-		      <th>Æò±Õ ¹İÀÀ¼Óµµ</th>
+		      <th>ìˆœìœ„</th>
+		      <th>í•™êµëª…</th>
+		      <th>í‰ê·  ë°˜ì‘ì†ë„</th>
 		    </tr>
 		  </thead>
 		  <tbody id="school-body"></tbody>
@@ -195,7 +218,7 @@
 		  const school = localStorage.getItem("school");
 		  if (school) {
 		    const title = document.getElementById("school-rank-title");
-		    title.innerHTML = `&#127891; ³ªÀÇ ÇĞ±³ ¼øÀ§ <span style="font-size:1rem; color:#555">(${school})</span>`;
+		    title.innerHTML = `&#127891; ë‚˜ì˜ í•™êµ ìˆœìœ„ <span style="font-size:1rem; color:#555">(${school})</span>`;
 		  }
 		}
     function generateUUID() {
@@ -272,30 +295,30 @@
       const nickname = localStorage.getItem("nickname");
       const school = localStorage.getItem("school");
       if (!nickname || !school) {
-        alert("ÇĞ±³¸í°ú ´Ğ³×ÀÓ Á¤º¸°¡ ¾ø½À´Ï´Ù. ¸ŞÀÎ È­¸é¿¡¼­ µî·ÏÇØÁÖ¼¼¿ä.");
+        alert("í•™êµëª…ê³¼ ë‹‰ë„¤ì„ ì •ë³´ê°€ ì—†ìŠµë‹ˆë‹¤. ë©”ì¸ í™”ë©´ì—ì„œ ë“±ë¡í•´ì£¼ì„¸ìš”.");
 				location.href = "index.html";
         return;
       }
-      if (getHearts() <= 0) return alert("ÇÏÆ®°¡ ¾ø½À´Ï´Ù! 1ºĞ ÈÄ ÀÚµ¿ È¸º¹µË´Ï´Ù.");
+      if (getHearts() <= 0) return alert("í•˜íŠ¸ê°€ ì—†ìŠµë‹ˆë‹¤! 1ë¶„ í›„ ìë™ íšŒë³µë©ë‹ˆë‹¤.");
 
       canClick = false;
       startTime = null;
 
       const gameArea = document.getElementById("game-area");
       gameArea.innerHTML = `
-        <p>&#9203; ÁØºñ Áß... ¹öÆ°ÀÌ 'Áö±İ Å¬¸¯!'À¸·Î ¹Ù²î¸é ´­·¯ÁÖ¼¼¿ä.</p>
-        <button id="click-btn" class="btn" onclick="recordClick()">Å¬¸¯ ´ë±â Áß</button>
+        <p>&#9203; ì¤€ë¹„ ì¤‘... ë²„íŠ¼ì´ 'ì§€ê¸ˆ í´ë¦­!'ìœ¼ë¡œ ë°”ë€Œë©´ ëˆŒëŸ¬ì£¼ì„¸ìš”.</p>
+        <button id="click-btn" class="btn" onclick="recordClick()">í´ë¦­ ëŒ€ê¸° ì¤‘</button>
         <div id="alert-box"></div>
       `;
 
       const delay = Math.floor(Math.random() * 3000) + 2000;
-		  const fakeMessages = ["Àá½Ã¸¸¿ä...", "¾ÆÁ÷!", "°ğ ½ÃÀÛµË´Ï´Ù!", "ÁØºñÇÏ¼¼¿ä..."];
+		  const fakeMessages = ["ì ì‹œë§Œìš”...", "ì•„ì§!", "ê³§ ì‹œì‘ë©ë‹ˆë‹¤!", "ì¤€ë¹„í•˜ì„¸ìš”..."];
 		  const fakeCount = Math.floor(Math.random() * 2) + 1;
 		
-		  // °¡Â¥ ¸Ş½ÃÁö ¸î ¹ø º¸¿©ÁÖ±â
+		  // ê°€ì§œ ë©”ì‹œì§€ ëª‡ ë²ˆ ë³´ì—¬ì£¼ê¸°
 		  for (let i = 0; i < fakeCount; i++) {
 		    setTimeout(() => {
-		      if (canClick) return; // ½ÇÁ¦ Å¬¸¯ ½ÃÀÛµÆÀ¸¸é ¹«½Ã
+		      if (canClick) return; // ì‹¤ì œ í´ë¦­ ì‹œì‘ëìœ¼ë©´ ë¬´ì‹œ
 		      const msg = fakeMessages[Math.floor(Math.random() * fakeMessages.length)];
 		      const btn = document.getElementById("click-btn");
 		      if (btn) btn.textContent = msg;
@@ -303,23 +326,23 @@
 		  }
  
 
-			// ½ÇÁ¦ ¹İÀÀ ½ÃÀÛ
+			// ì‹¤ì œ ë°˜ì‘ ì‹œì‘
 			timeoutId = setTimeout(() => {
 			  if (!useHeart()) {
-			    alert("ÇÏÆ®¸¦ »ç¿ëÇÒ ¼ö ¾ø½À´Ï´Ù.");
-			    gameArea.innerHTML = `<button class="btn" id="start-btn" onclick="startGame()">°ÔÀÓ ½ÃÀÛ</button>`;
+			    alert("í•˜íŠ¸ë¥¼ ì‚¬ìš©í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
+			    gameArea.innerHTML = `<button class="btn" id="start-btn" onclick="startGame()">ê²Œì„ ì‹œì‘</button>`;
 			    return;
 			  }
 			
 			  //canClick = true;
 			  //startTime = Date.now();
-			  //document.querySelector("#click-btn").textContent = "Áö±İ Å¬¸¯!";
+			  //document.querySelector("#click-btn").textContent = "ì§€ê¸ˆ í´ë¦­!";
 
 
 				const btn = document.getElementById("click-btn");
-			  if (btn) btn.textContent = "Áö±İ Å¬¸¯!";
+			  if (btn) btn.textContent = "ì§€ê¸ˆ í´ë¦­!";
 			
-			  // 50ms ÈÄ¿¡ ½ÇÁ¦ ÃøÁ¤ ½ÃÀÛ
+			  // 50ms í›„ì— ì‹¤ì œ ì¸¡ì • ì‹œì‘
 			  setTimeout(() => {
 			    canClick = true;
 			    startTime = Date.now();
@@ -327,23 +350,32 @@
 
 				
 			
-			  // ¹İÀÀ Á¦ÇÑ ½Ã°£ (¿¹: 1500ms ¾È¿¡ Å¬¸¯ ¾È ÇÏ¸é ½ÇÆĞ)
+			  // ë°˜ì‘ ì œí•œ ì‹œê°„ (ì˜ˆ: 1500ms ì•ˆì— í´ë¦­ ì•ˆ í•˜ë©´ ì‹¤íŒ¨)
 			  setTimeout(() => {
 			    if (canClick) {
 			      canClick = false;
-			      showAlert("³Ê¹« ´Ê¾ú¾î¿ä! ´Ù½Ã ½ÃÀÛÇÕ´Ï´Ù.");
+			      showAlert("ë„ˆë¬´ ëŠ¦ì—ˆì–´ìš”! ë‹¤ì‹œ ì‹œì‘í•©ë‹ˆë‹¤.");
 			      setTimeout(startGame, 1500);
 			    }
-			  }, 1500); // Á¦ÇÑ ½Ã°£
+			  }, 1500); // ì œí•œ ì‹œê°„
 			}, delay);
     }
 
     function recordClick() {
       if (!canClick || startTime === null) {
-        showAlert("&#9940; ¾ÆÁ÷ Å¬¸¯ÇÏ¸é ¾ÈµÅ¿ä! ´Ù½Ã ½ÃÀÛÇÕ´Ï´Ù.");
-        clearTimeout(timeoutId);
-        setTimeout(startGame, 1500);
-        return;
+        //showAlert("&#9940; ì•„ì§ í´ë¦­í•˜ë©´ ì•ˆë¼ìš”! ë‹¤ì‹œ ì‹œì‘í•©ë‹ˆë‹¤.");
+        //clearTimeout(timeoutId);
+        //setTimeout(startGame, 1500);
+        //return;
+
+				if (useHeart()) {
+		      showAlert("&#9940; ì•„ì§ í´ë¦­í•˜ë©´ ì•ˆë¼ìš”! í•˜íŠ¸ê°€ 1ê°œ ì°¨ê°ë˜ì—ˆìŠµë‹ˆë‹¤.");
+		    } else {
+		      showAlert("&#9940; ì•„ì§ í´ë¦­í•˜ë©´ ì•ˆë¼ìš”! í•˜íŠ¸ê°€ ë¶€ì¡±í•©ë‹ˆë‹¤.");
+		    }
+		    clearTimeout(timeoutId);
+		    setTimeout(startGame, 1500);
+		    return;
       }
 
       canClick = false;
@@ -353,8 +385,8 @@
       const reactionTime = Date.now() - startTime;
 
       document.getElementById("game-area").innerHTML = `
-        <p>&#9201; ´ç½ÅÀÇ ¹İÀÀ ¼Óµµ´Â <b>${reactionTime}ms</b>ÀÔ´Ï´Ù!</p>
-        <button class="btn" onclick="startGame()">´Ù½Ã ½ÃÀÛ</button>
+        <p>&#9201; ë‹¹ì‹ ì˜ ë°˜ì‘ ì†ë„ëŠ” <b>${reactionTime}ms</b>ì…ë‹ˆë‹¤!</p>
+        <button class="btn" onclick="startGame()">ë‹¤ì‹œ ì‹œì‘</button>
       `;
 
 			if (reactionTime <= 2000) {
@@ -380,7 +412,7 @@
 		    if (data.length > 0) {
 			    const existingScore = data[0].score;
 			    if (newScore < existingScore) {
-			      // ´õ ºü¸£¸é UPDATE
+			      // ë” ë¹ ë¥´ë©´ UPDATE
 			      await fetch(`${SUPABASE_URL}/rest/v1/click_scores?uuid=eq.${uuid}`, {
 			        method: "PATCH",
 			        headers: {
@@ -390,9 +422,10 @@
 			        },
 			        body: JSON.stringify({ score: newScore })
 			      });
+						showFireworks(window.innerWidth / 2, window.innerHeight / 2);
 			    }
 			  } else {
-			    // ¾ø´Ù¸é INSERT
+			    // ì—†ë‹¤ë©´ INSERT
 			    await fetch(`${SUPABASE_URL}/rest/v1/click_scores`, {
 			      method: "POST",
 			      headers: {
@@ -403,9 +436,10 @@
 			      },
 			      body: JSON.stringify({ uuid, nickname, school, score: newScore })
 			    });
+					showFireworks(window.innerWidth / 2, window.innerHeight / 2);
 			  }
 		  } catch (e) {
-		    console.error("Á¡¼ö ÀúÀå ¿À·ù:", e);
+		    console.error("ì ìˆ˜ ì €ì¥ ì˜¤ë¥˜:", e);
 		  }
 			
       loadLeaderboard();
@@ -501,6 +535,30 @@
 		  });
 		}
 
+	function showFireworks(x, y) {
+  for (let i = 0; i < 25; i++) {
+    const spark = document.createElement("div");
+    spark.classList.add("firework");
+
+    const angle = Math.random() * 2 * Math.PI;
+    const radius = Math.random() * 60;
+    const offsetX = Math.cos(angle) * radius;
+    const offsetY = Math.sin(angle) * radius;
+
+    spark.style.left = `${x + offsetX}px`;
+    spark.style.top = `${y + offsetY}px`;
+    spark.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+
+    document.body.appendChild(spark);
+
+    setTimeout(() => {
+      spark.remove();
+    }, 700);
+  }
+}
+
+
+
 
     setInterval(updateHearts, 5000);
     window.onload = () => {
@@ -512,5 +570,8 @@
 
     };
   </script>
+<!-- body í•˜ë‹¨ì— ì¶”ê°€ -->
+<div id="fireworks-container" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; display:none;"></div>
+
 </body>
 </html>
