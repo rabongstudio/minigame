@@ -77,8 +77,8 @@
   </div>
 
   <div class="game-list">
-    <button class="game-btn" onclick="goToClickGame()">&#128147; 클릭 타이밍 게임</button>
-    <button class="game-btn" onclick="alert('준비 중입니다.')">&#128290; 숫자 순서 게임</button>
+    <button class="game-btn" onclick="goToClickGame('click.html')">&#128147; 클릭 타이밍 게임</button>
+    <button class="game-btn" onclick="goToClickGame('number.html')">&#128290; 숫자 순서 게임</button>
     <button class="game-btn" onclick="alert('준비 중입니다.')">&#129504; 기억력 게임</button>
   </div>
 
@@ -155,13 +155,13 @@
       document.getElementById("register-area").style.display = "none";
     }
 
-    function goToClickGame() {
+    function goToClickGame(url) {
       if (isFirstVisit()) {
         alert("먼저 학교명과 닉네임을 등록해주세요.");
         document.getElementById("register-area").style.display = "block";
         return;
       }
-      location.href = `click.html`;
+      location.href = url;
     }
 
     window.onload = () => {
