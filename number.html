@@ -99,12 +99,29 @@
 		      transform: scale(4) translate(0, -50px);
 		    }
 		  }
+		  
+		  .home-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background-color: #4e77ff;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 10px 16px;
+        font-size: 1rem;
+        cursor: pointer;
+        text-decoration: none;
+      }
   </style>
 </head>
 <body>
+  <a href="index.html" class="home-btn">&#127968; 홈</a>
   <h1>&#128290; 숫자 순서 게임</h1>
   <div id="hearts"></div>
-  <button class="btn" onclick="startGame()">게임 시작</button>
+  <div id="game-area">
+    <button class="btn" id="start-btn" onclick="startGame()">게임 시작</button>
+  </div>
   <div id="game"></div>
   <div id="result"></div>
 
@@ -154,19 +171,27 @@
     const HEART_KEY = "numberGameHearts";
     const LAST_RECOVER_KEY = "numberGameLastRecover";
     const MAX_HEARTS = 5;
-    const RECOVER_INTERVAL = 60 * 1000;
+    const RECOVER_INTERVAL = 5 * 1000;
 
 		const nickname = localStorage.getItem("nickname");
     const school = localStorage.getItem("school");
 		const uuid = getUUID();
 
 
-		function startGame() {
+    function startGame() {
       const game = document.getElementById("game");
       const result = document.getElementById("result");
+      const gameArea = document.getElementById("game-area");
+      
       result.textContent = "";
+      
+      const hearts = getHearts();
       game.innerHTML = "";
-
+      if (hearts <= 0) {
+        alert("하트가 부족합니다!");
+        return;
+      }
+      useHeart();
       let numbers = Array.from({ length: 25 }, (_, i) => i + 1);
       numbers.sort(() => Math.random() - 0.5);
 
@@ -197,7 +222,10 @@
 
       game.className = "board";
     }
-
+    function toggleStartButton() {
+      const btn = document.getElementById("start-btn");
+      //if (btn) btn.disabled = getHearts() <= 0;
+    }
     function getUUID() {
       let uuid = localStorage.getItem("uuid");
       if (!uuid) {
@@ -228,7 +256,13 @@
     function saveLastRecoverTime(timestamp) {
       localStorage.setItem(LAST_RECOVER_KEY, timestamp);
     }
-
+    function useHeart() {
+      let hearts = getHearts();
+      saveHearts(hearts - 1);
+      saveLastRecoverTime(Date.now());
+      renderHearts();
+      toggleStartButton();
+    }	
     function renderHearts() {
       const heartArea = document.getElementById("hearts");
       const count = getHearts();
