@@ -2,179 +2,170 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>미니게임존</title>
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet" />
   <style>
-    <style>
-  html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: 'Gowun Dodum', sans-serif;
-    background: linear-gradient(to bottom, #fff9f9, #dbeeff);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  #container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  }
+    html, body {
+      height: 100%;
+      font-family: 'Gowun Dodum', sans-serif;
+      background: linear-gradient(to bottom, #fff9f9, #dbeeff);
+      overflow: hidden;
+    }
 
-  #header {
-    flex-shrink: 0;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    :root {
+      --vh: 100%;
+    }
 
-  #register-area {
-    flex-shrink: 0;
-    background: #ffffff;
-    padding: 24px;
-    border-radius: 14px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    max-width: 420px;
-    margin: 0 auto 20px;
-  }
+    #container {
+      height: calc(var(--vh, 1vh) * 100);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 24px 20px;
+    }
 
-  .input-group {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 12px;
-  }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 24px;
+      text-align: center;
+      width: 100%;
+    }
 
-  input {
-    flex: 1;
-    padding: 1rem;
-    font-size: 1.1rem;
-    box-sizing: border-box;
-  }
+    #register-area {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 420px;
+      margin-bottom: 24px;
+    }
 
-  .btn {
-    background: #4e77ff;
-    color: white;
-    font-size: 1.2rem;
-    padding: 12px;
-    border: none;
-    border-radius: 10px;
-    width: 100%;
-    margin-top: 10px;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-  }
+    .input-group {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
 
-  .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  }
+    input {
+      flex: 1;
+      padding: 1rem;
+      font-size: 1.1rem;
+    }
 
-  .game-list {
-    flex-grow: 1;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    max-width: 420px;
-    margin: 0 auto 20px;
-    padding: 0 20px 40px;
-  }
+    .btn {
+      background: #4e77ff;
+      color: white;
+      font-size: 1.2rem;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      width: 100%;
+      margin-top: 10px;
+      cursor: pointer;
+    }
 
-  .game-btn {
-    font-size: 1.4rem;
-    padding: 1.2rem;
-    background: #4e77ff;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-  }
+    .game-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      max-width: 420px;
+      overflow-y: auto;
+    }
 
-  .game-btn:hover {
-    background: #2d5be3;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  }
+    .game-btn {
+      font-size: 1.4rem;
+      padding: 1.2rem;
+      background: #4e77ff;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
 
-  .search-popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid #4e77ff;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-    z-index: 9999;
-    max-width: 90%;
-    width: 400px;
-  }
+    .game-btn:hover {
+      background: #2d5be3;
+    }
 
-  .search-popup h3 {
-    margin-top: 0;
-    font-size: 1.2rem;
-  }
+    .search-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #4e77ff;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      z-index: 9999;
+      width: 90%;
+      max-width: 400px;
+    }
 
-  .search-popup ul {
-    list-style: none;
-    padding: 0;
-    margin: 10px 0 0 0;
-    text-align: left;
-    max-height: 300px;
-    overflow-y: auto;
-  }
+    .search-popup .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
 
-  .search-popup li {
-    padding: 8px 10px;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-  }
+    .search-popup h3 {
+      margin: 0 0 10px;
+    }
 
-  .search-popup li:hover {
-    background-color: #e0eaff;
-  }
+    .search-popup ul {
+      list-style: none;
+      padding: 0;
+      max-height: 300px;
+      overflow-y: auto;
+    }
 
-  .search-popup .close-btn {
-    position: absolute;
-    top: 8px;
-    right: 12px;
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-  }
-</style>
+    .search-popup li {
+      padding: 8px 10px;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+    }
+
+    .search-popup li:hover {
+      background-color: #e0eaff;
+    }
   </style>
 </head>
 <body>
-  <div id="header">
+  <div id="container">
     <h1>🎮 미니게임존</h1>
-  </div>
 
-  <div id="register-area" style="display:none">
-    <h3>첫 방문을 환영합니다!</h3>
-    <div class="input-group">
-      <input type="text" id="school" placeholder="학교명을 입력하세요" />
-      <button onclick="searchSchool()">검색</button>
+    <div id="register-area" style="display:none">
+      <h3>첫 방문을 환영합니다!</h3>
+      <div class="input-group">
+        <input type="text" id="school" placeholder="학교명을 입력하세요" />
+        <button onclick="searchSchool()">검색</button>
+      </div>
+      <div class="input-group">
+        <input type="text" id="nickname" placeholder="닉네임을 입력하세요" />
+      </div>
+      <button class="btn" onclick="registerUser()">등록</button>
     </div>
-    <div class="input-group">
-      <input type="text" id="nickname" placeholder="닉네임을 입력하세요" />
-    </div>
-    <button class="btn" onclick="registerUser()">등록</button>
-  </div>
 
-  <div class="game-list">
-    <button class="game-btn" onclick="goToClickGame('click.html')">&#9889; 클릭 타이밍 게임</button>
-    <button class="game-btn" onclick="goToClickGame('number.html')">🔢 숫자 순서 게임</button>
-    <button class="game-btn" onclick="goToClickGame('memory.html')">🧠 기억력 게임</button>
+    <div class="game-list">
+      <button class="game-btn" onclick="goToClickGame('click.html')">⚡ 클릭 타이밍 게임</button>
+      <button class="game-btn" onclick="goToClickGame('number.html')">🔢 숫자 순서 게임</button>
+      <button class="game-btn" onclick="goToClickGame('memory.html')">🧠 기억력 게임</button>
+    </div>
   </div>
 
   <div class="search-popup" id="popup">
@@ -186,7 +177,15 @@
   <script>
     const SUPABASE_URL = "https://dmxkznmliiyffoltdcxd.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRteGt6bm1saWl5ZmZvbHRkY3hkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwNTc2NzksImV4cCI6MjA1ODYzMzY3OX0.NUQgOp8NGHEZ0RDQ4sbuH7YCJpfYqF3UyEK3sPtu5-o";
+
     let selectedSchool = null;
+
+    function setVh() {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    window.addEventListener('resize', setVh);
+    window.addEventListener('load', setVh);
 
     function generateUUID() {
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -214,10 +213,7 @@
       if (!keyword) return alert("학교명을 입력해주세요!");
 
       const res = await fetch(`${SUPABASE_URL}/rest/v1/school?school_name=ilike.*${encodeURIComponent(keyword)}*`, {
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`
-        }
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
       });
 
       const data = await res.json();
@@ -246,42 +242,10 @@
     async function registerUser() {
       const school = document.getElementById("school").value.trim();
       const nickname = document.getElementById("nickname").value.trim();
-      if (!school || !nickname) {
-        alert("학교명과 닉네임을 모두 입력해주세요.");
-        return;
-      }
-
-      if (school !== selectedSchool) {
-        alert("검색 후 목록에서 학교를 선택해주세요.");
-        return;
-      }
-
-      const verifyRes = await fetch(`${SUPABASE_URL}/rest/v1/school?school_name=eq.${encodeURIComponent(school)}`, {
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`
-        }
-      });
-      const verify = await verifyRes.json();
-      if (!Array.isArray(verify) || verify.length === 0) {
-        alert("입력하신 학교명을 검색하여 선택해주세요.");
-        return;
-      }
-
-      const dupRes = await fetch(`${SUPABASE_URL}/rest/v1/players?school=eq.${encodeURIComponent(school)}&nickname=eq.${encodeURIComponent(nickname)}`, {
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`
-        }
-      });
-      const dupData = await dupRes.json();
-      if (dupData.length > 0) {
-        alert("같은 학교에서 이미 사용 중인 닉네임입니다.");
-        return;
-      }
-
+      if (!school || !nickname) return alert("학교명과 닉네임을 모두 입력해주세요.");
+      if (school !== selectedSchool) return alert("검색 후 목록에서 학교를 선택해주세요.");
       const uuid = getUUID();
-
+      // ✅ Supabase에 등록하기 (players 테이블에 추가)
       await fetch(`${SUPABASE_URL}/rest/v1/players`, {
         method: "POST",
         headers: {
@@ -290,9 +254,13 @@
           Authorization: `Bearer ${SUPABASE_KEY}`,
           Prefer: "resolution=merge-duplicates"
         },
-        body: JSON.stringify({ uuid, school, nickname })
+        body: JSON.stringify({
+          uuid,
+          school,
+          nickname
+        })
       });
-
+      
       localStorage.setItem("school", school);
       localStorage.setItem("nickname", nickname);
       document.getElementById("register-area").style.display = "none";
@@ -308,29 +276,22 @@
     }
 
     window.onload = async () => {
-  const uuid = getUUID();
+      const uuid = getUUID();
+      const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/players?uuid=eq.${uuid}`, {
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+      });
+      const data = await checkRes.json();
 
-  const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/players?uuid=eq.${uuid}`, {
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`
+      if (!Array.isArray(data) || data.length === 0) {
+        document.getElementById("register-area").style.display = "block";
+        localStorage.removeItem("school");
+        localStorage.removeItem("nickname");
+      } else {
+        localStorage.setItem("school", data[0].school);
+        localStorage.setItem("nickname", data[0].nickname);
+        document.getElementById("register-area").style.display = "none";
+      }
     }
-  });
-
-  const data = await checkRes.json();
-
-  if (!Array.isArray(data) || data.length === 0) {
-    // 등록 안 되어 있음 → 등록창 띄우기
-    document.getElementById("register-area").style.display = "block";
-    localStorage.removeItem("school");
-    localStorage.removeItem("nickname");
-  } else {
-    // 등록되어 있으면 localStorage에 저장
-    localStorage.setItem("school", data[0].school);
-    localStorage.setItem("nickname", data[0].nickname);
-    document.getElementById("register-area").style.display = "none";
-  }
-};
   </script>
 </body>
 </html>

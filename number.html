@@ -125,24 +125,24 @@ h2 {
 /* 게임 보드 */
 .board {
   display: grid;
-  gap: 10px;
-  justify-content: center;
-  margin: 30px auto;
+  gap: 4px;
+  max-width: 300px;     /* ✅ 전체 보드 너비 제한 */
+  margin: 0 auto;
+  width: 100%;
+  grid-template-columns: repeat(5, 1fr);
 }
-
 /* 카드 셀 */
 .cell {
   aspect-ratio: 1 / 1;
-  background: #ffffff;
+  background: white;
   border: 2px solid #4e77ff;
-  border-radius: 8px;
-  font-size: 1.4rem;
-  width: 60px;
-  height: 60px;
-  cursor: pointer;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  text-align: center;
+  line-height: 1;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 .hidden {
@@ -244,7 +244,7 @@ h2 {
     const HEART_KEY = "numberGameHearts";
     const LAST_RECOVER_KEY = "numberGameLastRecover";
     const MAX_HEARTS = 5;
-    const RECOVER_INTERVAL = 5 * 1000;
+    const RECOVER_INTERVAL = 60 * 1000;
 
 		const nickname = localStorage.getItem("nickname");
     const school = localStorage.getItem("school");
@@ -292,8 +292,13 @@ h2 {
         };
         game.appendChild(btn);
       });
-
+ 
+      
+        // ✅ 이 부분 추가!
+      const gridSize = 5;
       game.className = "board";
+      game.style.display = "grid";
+      game.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
     }
     function toggleStartButton() {
       const btn = document.getElementById("start-btn");
@@ -466,7 +471,8 @@ h2 {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/number_scores?select=school,score`, {
         headers: {
           apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          Range: "0-999"  // ← 추가! 0번부터 999번까지 조회
         }
       });
       const data = await res.json();
@@ -498,7 +504,8 @@ h2 {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/number_scores?school=eq.${encodeURIComponent(school)}&select=uuid,nickname,score&order=score.asc`, {
         headers: {
           apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          Range: "0-999"  // ← 추가! 0번부터 999번까지 조회
         }
       });
       const data = await res.json();

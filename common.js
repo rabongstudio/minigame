@@ -165,7 +165,8 @@ async function loadMySchoolRank() {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/memory_scores?school=eq.${encodeURIComponent(school)}&select=uuid,nickname,score&order=score.desc`, {
     headers: {
       apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      Range: "0-999"  // ← 추가! 0번부터 999번까지 조회
     }
   });
 
@@ -220,7 +221,8 @@ async function loadSchoolRank() {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/memory_scores?select=school,score`, {
     headers: {
       apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      Range: "0-999"  // ← 추가! 0번부터 999번까지 조회
     }
   });
 
