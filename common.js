@@ -110,6 +110,17 @@ async function loadLeaderboard() {
   });
 
   const scores = await res.json();
+  
+  // 내 순위 전체에서 가져오기
+  const myRes = await fetch(`${SUPABASE_URL}/rest/v1/memory_scores_with_rank?uuid=eq.${uuid}`, {
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`
+    }
+  });
+  
+  const myData = await myRes.json();
+	
   const rankBody = document.getElementById("rank-body");
   rankBody.innerHTML = "";
 
@@ -126,11 +137,30 @@ async function loadLeaderboard() {
     `;
     rankBody.appendChild(row);
   });
+  
+  // 10위 밖일 경우 내 순위 맨 아래 추가
+  if (myData.length > 0) {
+    const myRank = myData[0].rank;
+  
+    if (myRank > 10) {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${myRank}</td>
+        <td>${myData[0].nickname}</td>
+        <td>${myData[0].school}</td>
+        <td>${myData[0].score}</td>
+      `;
+      row.classList.add("my-row");
+      document.getElementById("rank-body").appendChild(row); // 또는 rankBody 변수 있으면 그걸로
+    }
+  }
 }
 
 async function loadMySchoolRank() {
   const school = localStorage.getItem("school");
   if (!school) return;
+
+  const uuid = getUUID(); // 반드시 필요함
 
   const res = await fetch(`${SUPABASE_URL}/rest/v1/memory_scores?school=eq.${encodeURIComponent(school)}&select=uuid,nickname,score&order=score.desc`, {
     headers: {
@@ -143,22 +173,50 @@ async function loadMySchoolRank() {
   const tbody = document.getElementById("my-school-body");
   tbody.innerHTML = "";
 
+  let myEntry = null;
+  let myRank = -1;
+
+  // 상위 10명까지 표시 + 내 위치 기억
   data.forEach((entry, i) => {
-    const row = document.createElement("tr");
-    if (entry.uuid === uuid) {
-      row.classList.add("my-row");
+    if (i < 10) {
+      const row = document.createElement("tr");
+      if (entry.uuid === uuid) {
+        row.classList.add("my-row");
+      }
+      row.innerHTML = `
+        <td>${i + 1}</td>
+        <td>${entry.nickname}</td>
+        <td>${entry.score}</td>
+      `;
+      tbody.appendChild(row);
     }
+
+    if (entry.uuid === uuid) {
+      myRank = i + 1;
+      myEntry = entry;
+    }
+  });
+
+  // 내가 10위 밖이면 내 줄 따로 추가
+  if (myRank > 10 && myEntry) {
+    const row = document.createElement("tr");
+    row.classList.add("my-row");
     row.innerHTML = `
-      <td>${i + 1}</td>
-      <td>${entry.nickname}</td>
-      <td>${entry.score}</td>
+      <td>${myRank}</td>
+      <td>${myEntry.nickname}</td>
+      <td>${myEntry.score}</td>
     `;
     tbody.appendChild(row);
-  });
+  }
+
+  // 타이틀에 학교명 표시
   const title = document.getElementById("school-rank-title");
   title.innerHTML = `&#127891; 나의 학교 순위 <br/><span style="font-size:1rem; color:#555">(${school})</span>`;
 }
+
 async function loadSchoolRank() {
+  const mySchool = localStorage.getItem("school");
+
   const res = await fetch(`${SUPABASE_URL}/rest/v1/memory_scores?select=school,score`, {
     headers: {
       apikey: SUPABASE_KEY,
@@ -175,6 +233,7 @@ async function loadSchoolRank() {
     schoolMap[school].push(score);
   });
 
+  // 평균 점수 계산 후 정렬
   const averages = Object.entries(schoolMap).map(([school, scores]) => ({
     school,
     avg: Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
@@ -183,16 +242,37 @@ async function loadSchoolRank() {
   const schoolBody = document.getElementById("school-body");
   schoolBody.innerHTML = "";
 
+  let mySchoolRank = -1;
+  let mySchoolData = null;
+
+  // 상위 10위까지만 표시
   averages.forEach((entry, i) => {
-    const row = document.createElement("tr");
-    if (entry.school === localStorage.getItem("school")) {
-      row.classList.add("my-row");
+    if (i < 10) {
+      const row = document.createElement("tr");
+      if (entry.school === mySchool) row.classList.add("my-row");
+      row.innerHTML = `
+        <td>${i + 1}</td>
+        <td>${entry.school}</td>
+        <td>${entry.avg}</td>
+      `;
+      schoolBody.appendChild(row);
     }
+
+    if (entry.school === mySchool) {
+      mySchoolRank = i + 1;
+      mySchoolData = entry;
+    }
+  });
+
+  // 내 학교가 10위 밖일 때 추가 표시
+  if (mySchoolRank > 10 && mySchoolData) {
+    const row = document.createElement("tr");
+    row.classList.add("my-row");
     row.innerHTML = `
-      <td>${i + 1}</td>
-      <td>${entry.school}</td>
-      <td>${entry.avg}</td>
+      <td>${mySchoolRank}</td>
+      <td>${mySchoolData.school}</td>
+      <td>${mySchoolData.avg}</td>
     `;
     schoolBody.appendChild(row);
-  });
+  }
 }

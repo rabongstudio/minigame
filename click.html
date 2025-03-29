@@ -6,139 +6,106 @@
   <title>미니게임존</title>
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-		html {
-			height: 100%;
-			overflow-y: auto;
-		}
-    body {
-      font-family: 'Gowun Dodum', sans-serif;
-      text-align: center;
-      padding: 40px 20px;
-      background: linear-gradient(to bottom, #f9f9ff, #e2ecff);
-      color: #333;
-      min-height: 100vh;
-      box-sizing: border-box;
-			min-height: 100vh;
-		  overflow-x: hidden;
-			
-    }
-    .btn {
-      background-color: #4e77ff;
-      color: white;
-      padding: 1.4rem 0;
-      font-size: 1.5rem;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      margin: 14px auto;
-      width: 95%;
-      max-width: 420px;
-      display: block;
-      min-height: 56px;
-    }
-    .btn:disabled {
-      background-color: #bbb;
-      cursor: not-allowed;
-    }
-    #hearts {
-      font-size: 28px;
-      margin: 20px 0;
-    }
-    #leaderboard {
-      margin-top: 50px;
-    }
-    .alert {
-      background-color: #ff4e4e;
-      color: white;
-      padding: 12px 24px;
-      margin-top: 18px;
-      border-radius: 10px;
-      font-size: 1.2rem;
-    }
-    #rank-table {
-      width: 100%;
-      max-width: 420px;
-      margin: 0 auto;
-      border-collapse: collapse;
-      font-size: 1.1rem;
-    }
-    #rank-table th, #rank-table td {
-      padding: 10px;
-      border-bottom: 1px solid #ccc;
-    }
-    #rank-table th {
-      background-color: #f0f4ff;
-    }
-    
-	  #school-table {
-	    width: 100%;
-	    max-width: 420px;
-	    margin: 20px auto;
-	    border-collapse: collapse;
-	    font-size: 1.1rem;
-	  }
-	
-	  #school-table th, #school-table td {
-	    padding: 10px;
-	    border-bottom: 1px solid #ccc;
-	  }
-	
-	  #school-table th {
-	    background-color: #e9f4ff;
-	  }
-	
-	  
+    /* 전체 레이아웃 */
+body {
+  font-family: 'Gowun Dodum', sans-serif;
+  text-align: center;
+  padding: 40px 20px;
+  background: linear-gradient(to bottom, #f9f9ff, #e2ecff);
+  color: #333;
+  min-height: 100vh;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
 
-		#my-school-table {
-		  width: 100%;
-		  max-width: 420px;
-		  margin: 20px auto;
-		  border-collapse: collapse;
-		  font-size: 1.1rem;
-		}
-		
-		#my-school-table th, #my-school-table td {
-		  padding: 10px;
-		  border-bottom: 1px solid #ccc;
-		}
-		
-		#my-school-table th {
-		  background-color: #ffeef0;
-		}
-		
-		 
+h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
 
-		.firework {
-		    position: fixed;
-		    width: 6px;
-		    height: 6px;
-		    background: #fff;
-		    border-radius: 50%;
-		    animation: explode 700ms ease-out forwards;
-		    pointer-events: none;
-		    z-index: 9999;
-		  }
-		
-		  @keyframes explode {
-		    0% {
-		      opacity: 1;
-		      transform: scale(1);
-		    }
-		    100% {
-		      opacity: 0;
-		      transform: scale(4) translate(0, -50px);
-		    }
-		  }
-      .my-row {
-  	    background-color: #fffbcc !important; /* 연노랑 */
-  	    font-weight: bold;
-  	  }
+.btn {
+  background-color: #4e77ff;
+  color: white;
+  padding: 1.4rem 0;
+  font-size: 1.5rem;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 14px auto;
+  width: 95%;
+  max-width: 420px;
+  display: block;
+  min-height: 56px;
+}
+
+.btn:disabled {
+  background-color: #bbb;
+  cursor: not-allowed;
+}
+
+/* 하트 표시 */
+#hearts {
+  font-size: 28px;
+  margin: 20px 0;
+}
+
+/* 테이블 공통 디자인 */
+#rank-table,
+#my-school-table,
+#school-table {
+  width: 100%;
+  max-width: 420px;
+  margin: 20px auto;
+  border-collapse: collapse;
+  font-size: 1.05rem;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#rank-table th,
+#my-school-table th,
+#school-table th {
+  background-color: #f0f4ff;
+  padding: 12px;
+  color: #333;
+  font-weight: bold;
+}
+
+#rank-table td,
+#my-school-table td,
+#school-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+/* 마지막 줄 border 제거 */
+#rank-table tr:last-child td,
+#my-school-table tr:last-child td,
+#school-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* 순위 제목 스타일 */
+h2 {
+  margin-bottom: 6px;
+}
+
+#my-school-name {
+  font-size: 1.1rem;
+  color: #666;
+  display: block;
+  margin-top: 4px;
+}
+
+/* 내 순위 강조 */
+.my-row {
+  background-color: #fff6c6 !important;
+  font-weight: bold;
+}
+
 /* 홈 버튼 */
 .home-btn {
   position: fixed;
@@ -154,6 +121,68 @@
   text-decoration: none;
   z-index: 1000;
 }
+
+/* 게임 보드 */
+.board {
+  display: grid;
+  gap: 10px;
+  justify-content: center;
+  margin: 30px auto;
+}
+
+/* 카드 셀 */
+.cell {
+  aspect-ratio: 1 / 1;
+  background: #ffffff;
+  border: 2px solid #4e77ff;
+  border-radius: 8px;
+  font-size: 1.4rem;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hidden {
+  background: #ddd;
+  color: transparent;
+}
+
+.correct {
+  background: #4e77ff;
+  color: white;
+}
+
+.wrong {
+  background: #ff4e4e;
+  color: white;
+}
+
+/* 폭죽 애니메이션 */
+.firework {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  border-radius: 50%;
+  animation: explode 700ms ease-out forwards;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+@keyframes explode {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(4) translate(0, -50px);
+  }
+}
+
   </style>
 </head>
 <body>
@@ -171,7 +200,7 @@
           <th>순위</th>
           <th>이름</th>
           <th>학교</th>
-          <th>점수</th>
+          <th>시간</th>
         </tr>
       </thead>
       <tbody id="rank-body"></tbody>
@@ -184,7 +213,7 @@
 		    <tr>
 		      <th>순위</th>
 		      <th>닉네임</th>
-		      <th>점수</th>
+		      <th>시간</th>
 		    </tr>
 		  </thead>
 		  <tbody id="my-school-body"></tbody>
@@ -196,7 +225,7 @@
 		    <tr>
 		      <th>순위</th>
 		      <th>학교명</th>
-		      <th>평균 반응속도</th>
+		      <th>평균 반응시간</th>
 		    </tr>
 		  </thead>
 		  <tbody id="school-body"></tbody>
@@ -460,31 +489,54 @@
     }
 
     async function loadLeaderboard() {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/click_scores?select=uuid,nickname,school,score&order=score.asc&limit=10`, {
+
+       // ✅ 1. 상위 10위만 뷰에서 가져오기
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/click_scores_with_rank?select=uuid,nickname,school,score,rank&order=rank.asc&limit=10`, {
         headers: {
           apikey: SUPABASE_KEY,
           Authorization: `Bearer ${SUPABASE_KEY}`
         }
       });
-
-      const scores = await res.json();
+    
+      const topRanks = await res.json();
       const rankBody = document.getElementById("rank-body");
       rankBody.innerHTML = "";
-
-      scores.forEach((entry, i) => {
+    
+      topRanks.forEach(entry => {
         const row = document.createElement("tr");
-        if (entry.uuid === uuid) {
-		      row.classList.add("my-row");
-		    }
+        if (entry.uuid === uuid) row.classList.add("my-row");
         row.innerHTML = `
-          <td>${i + 1}</td>
+          <td>${entry.rank}</td>
           <td>${entry.nickname}</td>
           <td>${entry.school}</td>
           <td>${entry.score}ms</td>
         `;
         rankBody.appendChild(row);
       });
+    
+      // ✅ 2. 내 랭킹 정보만 따로 한 줄 가져오기
+      const myRes = await fetch(`${SUPABASE_URL}/rest/v1/click_scores_with_rank?uuid=eq.${uuid}&select=uuid,nickname,school,score,rank`, {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`
+        }
+      });
+    
+      const myData = await myRes.json();
+      if (myData.length > 0 && myData[0].rank > 10) {
+        const entry = myData[0];
+        const row = document.createElement("tr");
+        row.classList.add("my-row");
+        row.innerHTML = `
+          <td>${entry.rank}</td>
+          <td>${entry.nickname}</td>
+          <td>${entry.school}</td>
+          <td>${entry.score}ms</td>
+        `;
+        rankBody.appendChild(row);
+      }
     }
+
 
 		async function loadSchoolRank() {
 		  const res = await fetch(`${SUPABASE_URL}/rest/v1/click_scores?select=school,score`, {
@@ -529,33 +581,56 @@
 		}
 
 		async function loadMySchoolRank() {
-		  const school = localStorage.getItem("school");
-		  if (!school) return;
-		
-		  const res = await fetch(`${SUPABASE_URL}/rest/v1/click_scores?school=eq.${encodeURIComponent(school)}&select=uuid,nickname,score&order=score.asc`, {
-		    headers: {
-		      apikey: SUPABASE_KEY,
-		      Authorization: `Bearer ${SUPABASE_KEY}`
-		    }
-		  });
-		
-		  const data = await res.json();
-		  const tbody = document.getElementById("my-school-body");
-		  tbody.innerHTML = "";
-		
-		  data.forEach((entry, i) => {
-		    const row = document.createElement("tr");
-		    if (entry.uuid === uuid) {
-		      row.classList.add("my-row");
-		    }
-		    row.innerHTML = `
-		      <td>${i + 1}</td>
-		      <td>${entry.nickname}</td>
-		      <td>${entry.score}ms</td>
-		    `;
-		    tbody.appendChild(row);
-		  });
-		}
+      const school = localStorage.getItem("school");
+      if (!school) return;
+    
+      const uuid = getUUID();
+    
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/click_scores?school=eq.${encodeURIComponent(school)}&select=uuid,nickname,score&order=score.asc`, {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`
+        }
+      });
+    
+      const data = await res.json();
+      const tbody = document.getElementById("my-school-body");
+      tbody.innerHTML = "";
+    
+      let myRank = -1;
+      let myEntry = null;
+    
+      // 상위 10위까지만 표시 + 내 순위 추적
+      data.forEach((entry, i) => {
+        if (i < 10) {
+          const row = document.createElement("tr");
+          if (entry.uuid === uuid) row.classList.add("my-row");
+          row.innerHTML = `
+            <td>${i + 1}</td>
+            <td>${entry.nickname}</td>
+            <td>${entry.score}ms</td>
+          `;
+          tbody.appendChild(row);
+        }
+    
+        if (entry.uuid === uuid) {
+          myRank = i + 1;
+          myEntry = entry;
+        }
+      });
+    
+      // 내가 10위 밖이면 하단에 추가 표시
+      if (myRank > 10 && myEntry) {
+        const row = document.createElement("tr");
+        row.classList.add("my-row");
+        row.innerHTML = `
+          <td>${myRank}</td>
+          <td>${myEntry.nickname}</td>
+          <td>${myEntry.score}ms</td>
+        `;
+        tbody.appendChild(row);
+      }
+    }
 
 	function showFireworks(x, y) {
   for (let i = 0; i < 25; i++) {

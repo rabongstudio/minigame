@@ -6,101 +6,107 @@
   <title>숫자 순서 게임</title>
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Gowun Dodum', sans-serif;
-      text-align: center;
-      padding: 30px 10px;
-      background: linear-gradient(to bottom, #f9f9ff, #e2ecff);
-      color: #333;
-    }
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-    }
-    .board {
-      display: grid;
-      grid-template-columns: repeat(5, 60px);
-      grid-gap: 12px;
-      justify-content: center;
-      margin-bottom: 30px;
-    }
-    .cell {
-      background: #ffffff;
-      border: 2px solid #4e77ff;
-      border-radius: 10px;
-      font-size: 1.5rem;
-      padding: 20px 0;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .cell.correct {
-      background: #4e77ff;
-      color: white;
-      pointer-events: none;
-    }
-    .cell.wrong {
-      background: #ff4e4e;
-      color: white;
-    }
-    .btn {
-      font-size: 1.2rem;
-      padding: 10px 20px;
-      background: #4e77ff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-bottom: 20px;
-    }
-    #hearts {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    #leaderboard {
-      margin-top: 40px;
-    }
-    table {
-      width: 100%;
-      max-width: 420px;
-      margin: 20px auto;
-      border-collapse: collapse;
-      font-size: 1.1rem;
-    }
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #ccc;
-    }
-    th {
-      background-color: #f0f4ff;
-    }
-	  .my-row {
-	    background-color: #fffbcc !important; /* 연노랑 */
-	    font-weight: bold;
-	  }
+      /* 전체 레이아웃 */
+body {
+  font-family: 'Gowun Dodum', sans-serif;
+  text-align: center;
+  padding: 40px 20px;
+  background: linear-gradient(to bottom, #f9f9ff, #e2ecff);
+  color: #333;
+  min-height: 100vh;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
 
-		.firework {
-		    position: fixed;
-		    width: 6px;
-		    height: 6px;
-		    background: #fff;
-		    border-radius: 50%;
-		    animation: explode 700ms ease-out forwards;
-		    pointer-events: none;
-		    z-index: 9999;
-		  }
-		
-		  @keyframes explode {
-		    0% {
-		      opacity: 1;
-		      transform: scale(1);
-		    }
-		    100% {
-		      opacity: 0;
-		      transform: scale(4) translate(0, -50px);
-		    }
-		  }
-		  
-      /* 홈 버튼 */
+h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.btn {
+  background-color: #4e77ff;
+  color: white;
+  padding: 1.4rem 0;
+  font-size: 1.5rem;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 14px auto;
+  width: 95%;
+  max-width: 420px;
+  display: block;
+  min-height: 56px;
+}
+
+.btn:disabled {
+  background-color: #bbb;
+  cursor: not-allowed;
+}
+
+/* 하트 표시 */
+#hearts {
+  font-size: 28px;
+  margin: 20px 0;
+}
+
+/* 테이블 공통 디자인 */
+#rank-table,
+#my-school-table,
+#school-table {
+  width: 100%;
+  max-width: 420px;
+  margin: 20px auto;
+  border-collapse: collapse;
+  font-size: 1.05rem;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#rank-table th,
+#my-school-table th,
+#school-table th {
+  background-color: #f0f4ff;
+  padding: 12px;
+  color: #333;
+  font-weight: bold;
+}
+
+#rank-table td,
+#my-school-table td,
+#school-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+/* 마지막 줄 border 제거 */
+#rank-table tr:last-child td,
+#my-school-table tr:last-child td,
+#school-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* 순위 제목 스타일 */
+h2 {
+  margin-bottom: 6px;
+}
+
+#my-school-name {
+  font-size: 1.1rem;
+  color: #666;
+  display: block;
+  margin-top: 4px;
+}
+
+/* 내 순위 강조 */
+.my-row {
+  background-color: #fff6c6 !important;
+  font-weight: bold;
+}
+
+/* 홈 버튼 */
 .home-btn {
   position: fixed;
   top: 20px;
@@ -115,6 +121,67 @@
   text-decoration: none;
   z-index: 1000;
 }
+
+/* 게임 보드 */
+.board {
+  display: grid;
+  gap: 10px;
+  justify-content: center;
+  margin: 30px auto;
+}
+
+/* 카드 셀 */
+.cell {
+  aspect-ratio: 1 / 1;
+  background: #ffffff;
+  border: 2px solid #4e77ff;
+  border-radius: 8px;
+  font-size: 1.4rem;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hidden {
+  background: #ddd;
+  color: transparent;
+}
+
+.correct {
+  background: #4e77ff;
+  color: white;
+}
+
+.wrong {
+  background: #ff4e4e;
+  color: white;
+}
+
+/* 폭죽 애니메이션 */
+.firework {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  border-radius: 50%;
+  animation: explode 700ms ease-out forwards;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+@keyframes explode {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(4) translate(0, -50px);
+  }
+}
   </style>
 </head>
 <body>
@@ -128,8 +195,8 @@
   <div id="result"></div>
 
   <div id="leaderboard">
-    <h2>&#127942; 전체 순위</h2>
-    <table>
+    <h2 style="font-size: 1.5rem;">&#127942; 전국 순위</h2>
+    <table id="rank-table">
       <thead>
         <tr>
           <th>순위</th>
@@ -140,30 +207,34 @@
       </thead>
       <tbody id="rank-body"></tbody>
     </table>
-		<h2 id="school-rank-title">&#127891; 나의 학교 순위</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>순위</th>
-          <th>닉네임</th>
-          <th>시간</th>
-        </tr>
-      </thead>
-      <tbody id="my-school-body"></tbody>
-    </table>
-    <h2>&#127979; 학교별 평균 순위</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>순위</th>
-          <th>학교명</th>
-          <th>평균 속도</th>
-        </tr>
-      </thead>
-      <tbody id="school-body"></tbody>
-    </table>
 
-    
+		<h2 style="font-size: 1.5rem; margin-top: 40px;" id="school-rank-title">&#127891; 나의 학교 순위</h2>
+
+		<table id="my-school-table">
+		  <thead>
+		    <tr>
+		      <th>순위</th>
+		      <th>닉네임</th>
+		      <th>시간</th>
+		    </tr>
+		  </thead>
+		  <tbody id="my-school-body"></tbody>
+		</table>
+
+		<h2 style="font-size: 1.5rem; margin-top: 40px;">&#127979; 학교별 평균 순위</h2>
+		<table id="school-table">
+		  <thead>
+		    <tr>
+		      <th>순위</th>
+		      <th>학교명</th>
+		      <th>평균 시간</th>
+		    </tr>
+		  </thead>
+		  <tbody id="school-body"></tbody>
+		</table>
+
+		
+
   </div>
 
   <script>
@@ -187,8 +258,7 @@
       
       result.textContent = "";
       
-      const hearts = getHearts();
-      alert(hearts);
+      const hearts = getHearts(); 
       game.innerHTML = "";
       if (hearts <= 0) {
         alert("하트가 부족합니다!");
