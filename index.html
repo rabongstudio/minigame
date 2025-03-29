@@ -6,124 +6,158 @@
   <title>미니게임존</title>
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet" />
   <style>
-    body {
-      font-family: 'Gowun Dodum', sans-serif;
-      background: linear-gradient(to bottom, #fff9f9, #dbeeff);
-      margin: 0;
-      padding: 40px 20px;
-      text-align: center;
-      color: #333;
-    }
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 30px;
-    }
-    .game-list {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      max-width: 420px;
-      margin: 0 auto;
-    }
-    .game-btn {
-      font-size: 1.4rem;
-      padding: 1.2rem;
-      background: #4e77ff;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
-    }
-    .game-btn:hover {
-      background: #2d5be3;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    #register-area {
-      background: #ffffff;
-      padding: 24px;
-      border-radius: 14px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      max-width: 420px;
-      margin: 0 auto 30px;
-    }
-    .input-group {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 12px;
-    }
-    input {
-      flex: 1;
-      padding: 1rem;
-      font-size: 1.1rem;
-      box-sizing: border-box;
-    }
-    .btn {
-      background: #4e77ff;
-      color: white;
-      font-size: 1.2rem;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      width: 100%;
-      margin-top: 10px;
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
-    }
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    }
-    .search-popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      border: 1px solid #4e77ff;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-      z-index: 9999;
-      max-width: 90%;
-      width: 400px;
-    }
-    .search-popup h3 {
-      margin-top: 0;
-      font-size: 1.2rem;
-    }
-    .search-popup ul {
-      list-style: none;
-      padding: 0;
-      margin: 10px 0 0 0;
-      text-align: left;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-    .search-popup li {
-      padding: 8px 10px;
-      border-bottom: 1px solid #ddd;
-      cursor: pointer;
-      transition: background-color 0.2s ease-in-out;
-    }
-    .search-popup li:hover {
-      background-color: #e0eaff;
-    }
-    .search-popup .close-btn {
-      position: absolute;
-      top: 8px;
-      right: 12px;
-      background: none;
-      border: none;
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
+    <style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Gowun Dodum', sans-serif;
+    background: linear-gradient(to bottom, #fff9f9, #dbeeff);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  #header {
+    flex-shrink: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #register-area {
+    flex-shrink: 0;
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    max-width: 420px;
+    margin: 0 auto 20px;
+  }
+
+  .input-group {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  input {
+    flex: 1;
+    padding: 1rem;
+    font-size: 1.1rem;
+    box-sizing: border-box;
+  }
+
+  .btn {
+    background: #4e77ff;
+    color: white;
+    font-size: 1.2rem;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    width: 100%;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+
+  .game-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 420px;
+    margin: 0 auto 20px;
+    padding: 0 20px 40px;
+  }
+
+  .game-btn {
+    font-size: 1.4rem;
+    padding: 1.2rem;
+    background: #4e77ff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .game-btn:hover {
+    background: #2d5be3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  .search-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #4e77ff;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    z-index: 9999;
+    max-width: 90%;
+    width: 400px;
+  }
+
+  .search-popup h3 {
+    margin-top: 0;
+    font-size: 1.2rem;
+  }
+
+  .search-popup ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+    text-align: left;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .search-popup li {
+    padding: 8px 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  .search-popup li:hover {
+    background-color: #e0eaff;
+  }
+
+  .search-popup .close-btn {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+</style>
   </style>
 </head>
 <body>
-  <h1>🎮 미니게임존</h1>
+  <div id="header">
+    <h1>🎮 미니게임존</h1>
+  </div>
 
   <div id="register-area" style="display:none">
     <h3>첫 방문을 환영합니다!</h3>
