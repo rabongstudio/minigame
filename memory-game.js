@@ -7,9 +7,9 @@ const uuid = getUUID();
 
 window.onload = () => {
   updateHearts();
-  loadLeaderboard(); // 추가
-  loadMySchoolRank();
-  loadSchoolRank();
+  loadLeaderboard("memory_scores"); // 추가
+  loadMySchoolRank("memory_scores");
+  loadSchoolRank("memory_scores");
 };
 setInterval(updateHearts, 5000);
 
@@ -92,9 +92,9 @@ function gameOver() {
   document.getElementById("start-btn").disabled = false;
   
   setTimeout(() => {
-    loadLeaderboard(); // 추가
-    loadMySchoolRank();
-    loadSchoolRank();
+    loadLeaderboard("memory_scores"); // 추가
+    loadMySchoolRank("memory_scores");
+    loadSchoolRank("memory_scores");
   }, 500);
  
   

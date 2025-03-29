@@ -101,8 +101,8 @@ function showFireworks(x, y) {
   }
 }
 
-async function loadLeaderboard() {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/memory_scores?select=uuid,nickname,school,score&order=score.desc&limit=10`, {
+async function loadLeaderboard(table) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/`+table+`?select=uuid,nickname,school,score&order=score.desc&limit=10`, {
     headers: {
       apikey: SUPABASE_KEY,
       Authorization: `Bearer ${SUPABASE_KEY}`
@@ -112,7 +112,7 @@ async function loadLeaderboard() {
   const scores = await res.json();
   
   // 내 순위 전체에서 가져오기
-  const myRes = await fetch(`${SUPABASE_URL}/rest/v1/memory_scores_with_rank?uuid=eq.${uuid}`, {
+  const myRes = await fetch(`${SUPABASE_URL}/rest/v1/`+table+`_with_rank?uuid=eq.${uuid}`, {
     headers: {
       apikey: SUPABASE_KEY,
       Authorization: `Bearer ${SUPABASE_KEY}`
@@ -156,13 +156,13 @@ async function loadLeaderboard() {
   }
 }
 
-async function loadMySchoolRank() {
+async function loadMySchoolRank(table) {
   const school = localStorage.getItem("school");
   if (!school) return;
 
   const uuid = getUUID(); // 반드시 필요함
 
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/memory_scores?school=eq.${encodeURIComponent(school)}&select=uuid,nickname,score&order=score.desc`, {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/`+table+`?school=eq.${encodeURIComponent(school)}&select=uuid,nickname,score&order=score.desc`, {
     headers: {
       apikey: SUPABASE_KEY,
       Authorization: `Bearer ${SUPABASE_KEY}`,
@@ -215,14 +215,14 @@ async function loadMySchoolRank() {
   title.innerHTML = `&#127891; 나의 학교 순위 <br/><span style="font-size:1rem; color:#555">(${school})</span>`;
 }
 
-async function loadSchoolRank() {
+async function loadSchoolRank(table) {
   const mySchool = localStorage.getItem("school");
 
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/memory_scores?select=school,score`, {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/` + table + `?select=school,score`, {
     headers: {
       apikey: SUPABASE_KEY,
       Authorization: `Bearer ${SUPABASE_KEY}`,
-      Range: "0-999"  // ← 추가! 0번부터 999번까지 조회
+      Range: "0-999"
     }
   });
 
@@ -235,11 +235,11 @@ async function loadSchoolRank() {
     schoolMap[school].push(score);
   });
 
-  // 평균 점수 계산 후 정렬
-  const averages = Object.entries(schoolMap).map(([school, scores]) => ({
+  // ✅ 총점 계산 후 내림차순 정렬
+  const totals = Object.entries(schoolMap).map(([school, scores]) => ({
     school,
-    avg: Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
-  })).sort((a, b) => b.avg - a.avg);
+    sum: scores.reduce((a, b) => a + b, 0)
+  })).sort((a, b) => b.sum - a.sum);
 
   const schoolBody = document.getElementById("school-body");
   schoolBody.innerHTML = "";
@@ -247,15 +247,14 @@ async function loadSchoolRank() {
   let mySchoolRank = -1;
   let mySchoolData = null;
 
-  // 상위 10위까지만 표시
-  averages.forEach((entry, i) => {
+  totals.forEach((entry, i) => {
     if (i < 10) {
       const row = document.createElement("tr");
       if (entry.school === mySchool) row.classList.add("my-row");
       row.innerHTML = `
         <td>${i + 1}</td>
         <td>${entry.school}</td>
-        <td>${entry.avg}</td>
+        <td>${entry.sum}</td>
       `;
       schoolBody.appendChild(row);
     }
@@ -266,15 +265,15 @@ async function loadSchoolRank() {
     }
   });
 
-  // 내 학교가 10위 밖일 때 추가 표시
   if (mySchoolRank > 10 && mySchoolData) {
     const row = document.createElement("tr");
     row.classList.add("my-row");
     row.innerHTML = `
       <td>${mySchoolRank}</td>
       <td>${mySchoolData.school}</td>
-      <td>${mySchoolData.avg}</td>
+      <td>${mySchoolData.sum}</td>
     `;
     schoolBody.appendChild(row);
   }
 }
+ 
