@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>미니게임존</title>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+		html {
+			height: 100%;
+			overflow-y: auto;
+		}
+    body {
+      font-family: 'Gowun Dodum', sans-serif;
+      text-align: center;
+      padding: 40px 20px;
+      background: linear-gradient(to bottom, #f9f9ff, #e2ecff);
+      color: #333;
+      min-height: 100vh;
+      box-sizing: border-box;
+			min-height: 100vh;
+		  overflow-x: hidden;
+			
+    }
+    .btn {
+      background-color: #4e77ff;
+      color: white;
+      padding: 1.4rem 0;
+      font-size: 1.5rem;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin: 14px auto;
+      width: 95%;
+      max-width: 420px;
+      display: block;
+      min-height: 56px;
+    }
+    .btn:disabled {
+      background-color: #bbb;
+      cursor: not-allowed;
+    }
+    #hearts {
+      font-size: 28px;
+      margin: 20px 0;
+    }
+    #leaderboard {
+      margin-top: 50px;
+    }
+    .alert {
+      background-color: #ff4e4e;
+      color: white;
+      padding: 12px 24px;
+      margin-top: 18px;
+      border-radius: 10px;
+      font-size: 1.2rem;
+    }
+    #rank-table {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      border-collapse: collapse;
+      font-size: 1.1rem;
+    }
+    #rank-table th, #rank-table td {
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+    #rank-table th {
+      background-color: #f0f4ff;
+    }
+    
+	  #school-table {
+	    width: 100%;
+	    max-width: 420px;
+	    margin: 20px auto;
+	    border-collapse: collapse;
+	    font-size: 1.1rem;
+	  }
+	
+	  #school-table th, #school-table td {
+	    padding: 10px;
+	    border-bottom: 1px solid #ccc;
+	  }
+	
+	  #school-table th {
+	    background-color: #e9f4ff;
+	  }
+	
+	  
+
+		#my-school-table {
+		  width: 100%;
+		  max-width: 420px;
+		  margin: 20px auto;
+		  border-collapse: collapse;
+		  font-size: 1.1rem;
+		}
+		
+		#my-school-table th, #my-school-table td {
+		  padding: 10px;
+		  border-bottom: 1px solid #ccc;
+		}
+		
+		#my-school-table th {
+		  background-color: #ffeef0;
+		}
+		
+		 
+
+		.firework {
+		    position: fixed;
+		    width: 6px;
+		    height: 6px;
+		    background: #fff;
+		    border-radius: 50%;
+		    animation: explode 700ms ease-out forwards;
+		    pointer-events: none;
+		    z-index: 9999;
+		  }
+		
+		  @keyframes explode {
+		    0% {
+		      opacity: 1;
+		      transform: scale(1);
+		    }
+		    100% {
+		      opacity: 0;
+		      transform: scale(4) translate(0, -50px);
+		    }
+		  }
+      .my-row {
+  	    background-color: #fffbcc !important; /* 연노랑 */
+  	    font-weight: bold;
+  	  }
+/* 홈 버튼 */
+.home-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: #4e77ff;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 10px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  z-index: 1000;
+}
+  </style>
+</head>
+<body>
+<a href="index.html" class="home-btn">&#127968; 홈</a>
+  <h1 style="font-size: 2rem;">&#9889; 클릭 타이밍 게임</h1>
+  <div id="hearts"></div>
+  <div id="game-area">
+    <button class="btn" id="start-btn" onclick="startGame()">게임 시작</button>
+  </div>
+  <div id="leaderboard">
+    <h2 style="font-size: 1.5rem;">&#127942; 전국 순위</h2>
+    <table id="rank-table">
+      <thead>
+        <tr>
+          <th>순위</th>
+          <th>이름</th>
+          <th>학교</th>
+          <th>점수</th>
+        </tr>
+      </thead>
+      <tbody id="rank-body"></tbody>
+    </table>
+
+		<h2 style="font-size: 1.5rem; margin-top: 40px;" id="school-rank-title">&#127891; 나의 학교 순위</h2>
+
+		<table id="my-school-table">
+		  <thead>
+		    <tr>
+		      <th>순위</th>
+		      <th>닉네임</th>
+		      <th>점수</th>
+		    </tr>
+		  </thead>
+		  <tbody id="my-school-body"></tbody>
+		</table>
+
+		<h2 style="font-size: 1.5rem; margin-top: 40px;">&#127979; 학교별 평균 순위</h2>
+		<table id="school-table">
+		  <thead>
+		    <tr>
+		      <th>순위</th>
+		      <th>학교명</th>
+		      <th>평균 반응속도</th>
+		    </tr>
+		  </thead>
+		  <tbody id="school-body"></tbody>
+		</table>
+
+		
+
+  </div>
+
+  <script>
+    const MAX_HEARTS = 5;
+    const RECOVER_INTERVAL = 1 * 1000;
+    const HEART_KEY = "clickGameHearts";
+    const LAST_RECOVER_KEY = "clickGameLastRecover";
+    const SUPABASE_URL = "https://dmxkznmliiyffoltdcxd.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRteGt6bm1saWl5ZmZvbHRkY3hkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwNTc2NzksImV4cCI6MjA1ODYzMzY3OX0.NUQgOp8NGHEZ0RDQ4sbuH7YCJpfYqF3UyEK3sPtu5-o";
+    const uuid = getUUID();
+    let startTime = null;
+    let canClick = false;
+    let timeoutId = null;
+
+    function getUUID() {
+      let uuid = localStorage.getItem("uuid");
+      if (!uuid) {
+        uuid = generateUUID();
+        localStorage.setItem("uuid", uuid);
+      }
+      return uuid;
+    }
+		function showMySchoolTitle() {
+		  const school = localStorage.getItem("school");
+		  if (school) {
+		    const title = document.getElementById("school-rank-title");
+		    title.innerHTML = `&#127891; 나의 학교 순위<br/> <span style="font-size:1rem; color:#555">(${school})</span>`;
+		  }
+		}
+    function generateUUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    function getHearts() {
+      const stored = localStorage.getItem(HEART_KEY);
+      return stored !== null ? Math.min(parseInt(stored), MAX_HEARTS) : MAX_HEARTS;
+    }
+
+    function saveHearts(count) {
+      localStorage.setItem(HEART_KEY, count);
+    }
+
+    function getLastRecoverTime() {
+      const stored = localStorage.getItem(LAST_RECOVER_KEY);
+      return stored ? parseInt(stored) : null;
+    }
+
+    function saveLastRecoverTime(timestamp) {
+      localStorage.setItem(LAST_RECOVER_KEY, timestamp);
+    }
+
+    function renderHearts() {
+      const heartArea = document.getElementById("hearts");
+      const count = getHearts();
+      heartArea.innerHTML =
+        "&#10084;&#65039;".repeat(count) +
+        "&#129293;".repeat(MAX_HEARTS - count);
+    }
+
+    function toggleStartButton() {
+      const btn = document.getElementById("start-btn");
+      if (btn) btn.disabled = getHearts() <= 0;
+    }
+
+    function updateHearts() {
+      const now = Date.now();
+      const last = getLastRecoverTime();
+      let hearts = getHearts();
+
+      if (last !== null && hearts < MAX_HEARTS) {
+        const diff = now - last;
+        const recovered = Math.floor(diff / RECOVER_INTERVAL);
+        if (recovered > 0) {
+          hearts = Math.min(MAX_HEARTS, hearts + recovered);
+          saveHearts(hearts);
+          saveLastRecoverTime(last + recovered * RECOVER_INTERVAL);
+        }
+      }
+
+      renderHearts();
+      toggleStartButton();
+    }
+
+    function useHeart() {
+      let hearts = getHearts();
+      if (hearts > 0) {
+        saveHearts(hearts - 1);
+        saveLastRecoverTime(Date.now());
+        renderHearts();
+        toggleStartButton();
+        return true;
+      }
+      return false;
+    }
+
+    function startGame() {
+      const nickname = localStorage.getItem("nickname");
+      const school = localStorage.getItem("school");
+      if (!nickname || !school) {
+        alert("학교명과 닉네임 정보가 없습니다. 메인 화면에서 등록해주세요.");
+				location.href = "index.html";
+        return;
+      }
+      if (getHearts() <= 0) return alert("하트가 없습니다! 1분 후 자동 회복됩니다.");
+
+      canClick = false;
+      startTime = null;
+
+      const gameArea = document.getElementById("game-area");
+      gameArea.innerHTML = `
+        <p>&#9203; 준비 중... 버튼이 '지금 클릭!'으로 바뀌면 눌러주세요.</p>
+        <button id="click-btn" class="btn" onclick="recordClick()">클릭 대기 중</button>
+        <div id="alert-box"></div>
+      `;
+
+      const delay = Math.floor(Math.random() * 3000) + 2000;
+		  const fakeMessages = ["잠시만요...", "아직!", "곧 시작됩니다!", "준비하세요..."];
+		  const fakeCount = Math.floor(Math.random() * 2) + 1;
+		
+		  // 가짜 메시지 몇 번 보여주기
+		  for (let i = 0; i < fakeCount; i++) {
+		    setTimeout(() => {
+		      if (canClick) return; // 실제 클릭 시작됐으면 무시
+		      const msg = fakeMessages[Math.floor(Math.random() * fakeMessages.length)];
+		      const btn = document.getElementById("click-btn");
+		      if (btn) btn.textContent = msg;
+		    }, delay - (fakeCount - i) * 1000);
+		  }
+ 
+
+			// 실제 반응 시작
+			timeoutId = setTimeout(() => {
+			  if (!useHeart()) {
+			    alert("하트를 사용할 수 없습니다.");
+			    gameArea.innerHTML = `<button class="btn" id="start-btn" onclick="startGame()">게임 시작</button>`;
+			    return;
+			  }
+			
+			  //canClick = true;
+			  //startTime = Date.now();
+			  //document.querySelector("#click-btn").textContent = "지금 클릭!";
+
+
+				const btn = document.getElementById("click-btn");
+			  if (btn) btn.textContent = "지금 클릭!";
+			
+			  // 50ms 후에 실제 측정 시작
+			  setTimeout(() => {
+			    canClick = true;
+			    startTime = Date.now();
+			  }, 50);
+
+				
+			
+			  // 반응 제한 시간 (예: 1500ms 안에 클릭 안 하면 실패)
+			  setTimeout(() => {
+			    if (canClick) {
+			      canClick = false;
+			      showAlert("너무 늦었어요! 다시 시작합니다.");
+			      setTimeout(startGame, 1500);
+			    }
+			  }, 1500); // 제한 시간
+			}, delay);
+    }
+
+    function recordClick() {
+      if (!canClick || startTime === null) {
+        //showAlert("&#9940; 아직 클릭하면 안돼요! 다시 시작합니다.");
+        //clearTimeout(timeoutId);
+        //setTimeout(startGame, 1500);
+        //return;
+
+				if (useHeart()) {
+		      showAlert("&#9940; 아직 클릭하면 안돼요! 하트가 1개 차감되었습니다.");
+		    } else {
+		      showAlert("&#9940; 아직 클릭하면 안돼요! 하트가 부족합니다.");
+		    }
+		    clearTimeout(timeoutId);
+		    setTimeout(startGame, 1500);
+		    return;
+      }
+
+      canClick = false;
+      const nickname = localStorage.getItem("nickname");
+      const school = localStorage.getItem("school");
+      const uuid = getUUID();
+      const reactionTime = Date.now() - startTime;
+
+      document.getElementById("game-area").innerHTML = `
+        <p>&#9201; 당신의 반응 속도는 <b>${reactionTime}ms</b>입니다!</p>
+        <button class="btn" onclick="startGame()">다시 시작</button>
+      `;
+
+			if (reactionTime <= 2000) {
+			  saveScore(nickname, school, uuid, reactionTime);
+			}
+    }
+
+    function showAlert(message) {
+      const alertBox = document.getElementById("alert-box");
+      alertBox.innerHTML = `<div class="alert">${message}</div>`;
+    }
+
+    async function saveScore(nickname, school, uuid, newScore) {
+	    try {
+		    const res = await fetch(`${SUPABASE_URL}/rest/v1/click_scores?uuid=eq.${uuid}`, {
+		      headers: {
+		        apikey: SUPABASE_KEY,
+		        Authorization: `Bearer ${SUPABASE_KEY}`
+		      }
+		    });
+		    const data = await res.json();
+		
+		    if (data.length > 0) {
+			    const existingScore = data[0].score;
+			    if (newScore < existingScore) {
+			      // 더 빠르면 UPDATE
+			      await fetch(`${SUPABASE_URL}/rest/v1/click_scores?uuid=eq.${uuid}`, {
+			        method: "PATCH",
+			        headers: {
+			          "Content-Type": "application/json",
+			          apikey: SUPABASE_KEY,
+			          Authorization: `Bearer ${SUPABASE_KEY}`
+			        },
+			        body: JSON.stringify({ score: newScore })
+			      });
+						showFireworks(window.innerWidth / 2, window.innerHeight / 2);
+			    }
+			  } else {
+			    // 없다면 INSERT
+			    await fetch(`${SUPABASE_URL}/rest/v1/click_scores`, {
+			      method: "POST",
+			      headers: {
+			        "Content-Type": "application/json",
+			        apikey: SUPABASE_KEY,
+			        Authorization: `Bearer ${SUPABASE_KEY}`,
+			        Prefer: "return=representation"
+			      },
+			      body: JSON.stringify({ uuid, nickname, school, score: newScore })
+			    });
+					showFireworks(window.innerWidth / 2, window.innerHeight / 2);
+			  }
+		  } catch (e) {
+		    console.error("점수 저장 오류:", e);
+		  }
+			
+      loadLeaderboard();
+			loadSchoolRank();
+			loadMySchoolRank();
+    }
+
+    async function loadLeaderboard() {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/click_scores?select=uuid,nickname,school,score&order=score.asc&limit=10`, {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`
+        }
+      });
+
+      const scores = await res.json();
+      const rankBody = document.getElementById("rank-body");
+      rankBody.innerHTML = "";
+
+      scores.forEach((entry, i) => {
+        const row = document.createElement("tr");
+        if (entry.uuid === uuid) {
+		      row.classList.add("my-row");
+		    }
+        row.innerHTML = `
+          <td>${i + 1}</td>
+          <td>${entry.nickname}</td>
+          <td>${entry.school}</td>
+          <td>${entry.score}ms</td>
+        `;
+        rankBody.appendChild(row);
+      });
+    }
+
+		async function loadSchoolRank() {
+		  const res = await fetch(`${SUPABASE_URL}/rest/v1/click_scores?select=school,score`, {
+		    headers: {
+		      apikey: SUPABASE_KEY,
+		      Authorization: `Bearer ${SUPABASE_KEY}`
+		    }
+		  });
+		
+		  const data = await res.json();
+		  const schoolMap = {};
+		
+		  data.forEach(entry => {
+		    const { school, score } = entry;
+		    if (!schoolMap[school]) schoolMap[school] = [];
+		    schoolMap[school].push(score);
+		  });
+		
+		  const averages = Object.entries(schoolMap).map(([school, scores]) => ({
+		    school,
+		    avg: Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
+		  }));
+		
+		  averages.sort((a, b) => a.avg - b.avg);
+		
+		  const schoolBody = document.getElementById("school-body");
+		  schoolBody.innerHTML = "";
+		
+		  averages.forEach((entry, i) => {
+		    const row = document.createElement("tr");
+		    const school = localStorage.getItem("school");
+		    if (entry.school === school) {
+		      row.classList.add("my-row"); // ? 본인인 경우 스타일 클래스 추가
+		    }
+		    row.innerHTML = `
+		      <td>${i + 1}</td>
+		      <td>${entry.school}</td>
+		      <td>${entry.avg}ms</td>
+		    `;
+		    schoolBody.appendChild(row);
+		  });
+		}
+
+		async function loadMySchoolRank() {
+		  const school = localStorage.getItem("school");
+		  if (!school) return;
+		
+		  const res = await fetch(`${SUPABASE_URL}/rest/v1/click_scores?school=eq.${encodeURIComponent(school)}&select=uuid,nickname,score&order=score.asc`, {
+		    headers: {
+		      apikey: SUPABASE_KEY,
+		      Authorization: `Bearer ${SUPABASE_KEY}`
+		    }
+		  });
+		
+		  const data = await res.json();
+		  const tbody = document.getElementById("my-school-body");
+		  tbody.innerHTML = "";
+		
+		  data.forEach((entry, i) => {
+		    const row = document.createElement("tr");
+		    if (entry.uuid === uuid) {
+		      row.classList.add("my-row");
+		    }
+		    row.innerHTML = `
+		      <td>${i + 1}</td>
+		      <td>${entry.nickname}</td>
+		      <td>${entry.score}ms</td>
+		    `;
+		    tbody.appendChild(row);
+		  });
+		}
+
+	function showFireworks(x, y) {
+  for (let i = 0; i < 25; i++) {
+    const spark = document.createElement("div");
+    spark.classList.add("firework");
+
+    const angle = Math.random() * 2 * Math.PI;
+    const radius = Math.random() * 60;
+    const offsetX = Math.cos(angle) * radius;
+    const offsetY = Math.sin(angle) * radius;
+
+    spark.style.left = `${x + offsetX}px`;
+    spark.style.top = `${y + offsetY}px`;
+    spark.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+
+    document.body.appendChild(spark);
+
+    setTimeout(() => {
+      spark.remove();
+    }, 700);
+  }
+}
+
+
+
+
+    setInterval(updateHearts, 5000);
+    window.onload = () => {
+      updateHearts();
+      loadLeaderboard();
+			loadSchoolRank();
+			loadMySchoolRank();
+			showMySchoolTitle();
+
+    };
+  </script>
+<!-- body 하단에 추가 -->
+<div id="fireworks-container" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; display:none;"></div>
+
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>기억력 게임</title>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="common.js"></script>
+</head>
+<body>
+  <a href="index.html" class="home-btn">🏠 홈</a>
+  <h1>🧠 기억력 게임</h1>
+  <div id="hearts"></div>
+  <button class="btn" id="start-btn" onclick="startGame()">게임 시작</button>
+  <div id="stage"></div>
+  <div id="board" class="board"></div>
+  <div id="result"></div>
+  <div id="leaderboard">
+    <h2 style="font-size: 1.5rem;">&#127942; 전국 순위</h2>
+    <table id="rank-table">
+      <thead>
+        <tr>
+          <th>순위</th>
+          <th>이름</th>
+          <th>학교</th>
+          <th>점수</th>
+        </tr>
+      </thead>
+      <tbody id="rank-body"></tbody>
+    </table>
+
+		<h2 style="font-size: 1.5rem; margin-top: 40px;" id="school-rank-title">&#127891; 나의 학교 순위</h2>
+    <tbody id="my-school-body"></tbody>
+		<table id="my-school-table">
+		  <thead>
+		    <tr>
+		      <th>순위</th>
+		      <th>닉네임</th>
+		      <th>점수</th>
+		    </tr>
+		  </thead>
+		  <tbody id="my-school-body"></tbody>
+		</table>
+
+		<h2 style="font-size: 1.5rem; margin-top: 40px;">&#127979; 학교별 평균 순위</h2>
+		<table id="school-table">
+		  <thead>
+		    <tr>
+		      <th>순위</th>
+		      <th>학교명</th>
+		      <th>평균 점수</th>
+		    </tr>
+		  </thead>
+		  <tbody id="school-body"></tbody>
+		</table>
+
+		
+
+  </div>
+  <script>
+    const HEART_KEY = "memoryGameHearts";
+    const LAST_RECOVER_KEY = "memoryGameLastRecover";
+    const MAX_HEARTS = 5;
+    const RECOVER_INTERVAL = heartTime;
+  </script>
+  
+  <script src="memory-game.js"></script>
+</body>
+</html>
