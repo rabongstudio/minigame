@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🃏 짝 맞추기 게임</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+  .game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* 수직 가운데 정렬 */
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.board {
+  display: grid;
+  gap: 10px;
+  justify-content: center; /* 수평 가운데 정렬 */
+  margin-top: 20px;
+}
+  </style>
+</head>
+<body>
+  <a href="index.html" class="home-btn">🏠 홈</a>
+  <h1>🃏 짝 맞추기 게임</h1>
+  <div id="hearts"></div>
+  <div class="game-container">
+    <button class="btn" id="start-btn" onclick="startGame()">게임 시작</button>
+    <div id="game-board" class="board"></div>
+    <div id="result"></div>
+  </div>
+
+
+  <div id="leaderboard">
+    <h2>🏆 전체 순위</h2>
+    <table id="rank-table">
+      <thead><tr><th>순위</th><th>닉네임</th><th>학교</th><th>시간</th></tr></thead>
+      <tbody id="rank-body"></tbody>
+    </table>
+
+    <h2 id="school-rank-title">🎓 나의 학교 순위</h2>
+    <table id="my-school-table">
+      <thead><tr><th>순위</th><th>닉네임</th><th>점수</th></tr></thead>
+      <tbody id="my-school-body"></tbody>
+    </table>
+
+    <h2>🏫 학교별 평균시간 순위</h2>
+    <table id="school-table">
+      <thead><tr><th>순위</th><th>학교명</th><th>총점</th></tr></thead>
+      <tbody id="school-body"></tbody>
+    </table>
+  </div>
+
+  <script src="common.js"></script>
+  <script>
+    const uuid = getUUID();
+    let firstCard = null;
+    let secondCard = null;
+    let lock = false;
+    let matchedPairs = 0;
+    let startTime = 0;
+    let penaltyTime = 0;
+
+
+    const HEART_KEY = "matchGameHearts";
+    const LAST_RECOVER_KEY = "matchGameLastRecover";
+    const MAX_HEARTS = 5;
+    const RECOVER_INTERVAL = 1 * 1000; // 예: 1분마다 1개 회복
+    
+function startGame() {
+  const board = document.getElementById("game-board");
+  const result = document.getElementById("result");
+  board.innerHTML = "";
+  result.innerHTML = "";
+  matchedPairs = 0;
+  penaltyTime = 0;
+  firstCard = null;
+  secondCard = null;
+  lock = true; // 초반엔 클릭 잠금
+
+  if (getHearts() <= 0) {
+    alert("하트가 없습니다!");
+    return;
+  }
+  useHeart();
+
+  let cards = [];
+  for (let i = 1; i <= 8; i++) cards.push(i, i);
+  cards.sort(() => Math.random() - 0.5);
+
+  board.style.gridTemplateColumns = "repeat(4, 1fr)";
+  board.style.maxWidth = "min(90vw, 480px)";
+  board.style.margin = "0 auto";
+  board.style.aspectRatio = "1 / 1";
+
+  cards.forEach(num => {
+    const card = document.createElement("div");
+    card.className = "cell"; // 처음엔 hidden 클래스 없음
+    card.dataset.num = num;
+    card.textContent = num;
+    card.onclick = () => flipCard(card);
+    board.appendChild(card);
+  });
+
+  // 5초 후 모든 카드를 숨기고 클릭 가능하게 설정
+  setTimeout(() => {
+    const allCards = document.querySelectorAll(".cell");
+    allCards.forEach(card => {
+      card.classList.add("hidden");
+    });
+    lock = false;
+    startTime = Date.now(); // 시간 측정 시작은 여기서
+  }, 5000);
+}
+
+    function flipCard(card) {
+      if (lock || !card.classList.contains("hidden")) return;
+      card.classList.remove("hidden");
+
+      if (!firstCard) {
+        firstCard = card;
+      } else {
+        secondCard = card;
+        checkMatch();
+      }
+    }
+
+    function checkMatch() {
+      lock = true;
+      const isMatch = firstCard.dataset.num === secondCard.dataset.num;
+
+      if (isMatch) {
+        firstCard.classList.add("correct");
+        secondCard.classList.add("correct");
+        matchedPairs++;
+        if (matchedPairs === 8) {
+          const totalTime = ((Date.now() - startTime) / 1000 + penaltyTime).toFixed(2);
+          document.getElementById("result").innerHTML = `<p>완료! 소용 시간: <b>${totalTime}s</b></p>`;
+          saveScore(localStorage.getItem("nickname"), localStorage.getItem("school"), uuid, parseFloat(totalTime));
+        }
+        resetSelection();
+      } else {
+        penaltyTime += 1;
+        setTimeout(() => {
+          firstCard.classList.add("hidden");
+          secondCard.classList.add("hidden");
+          resetSelection();
+        }, 700);
+      }
+    }
+    
+    async function saveScore(nickname, school, uuid, finalScore) {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/match_scores?uuid=eq.${uuid}`, {
+          headers: {
+            apikey: SUPABASE_KEY,
+            Authorization: `Bearer ${SUPABASE_KEY}`
+          }
+        });
+        const data = await res.json();
+    
+        if (data.length > 0 && finalScore < data[0].score) {
+          await fetch(`${SUPABASE_URL}/rest/v1/match_scores?uuid=eq.${uuid}`, {
+			        method: "PATCH",
+			        headers: {
+			          "Content-Type": "application/json",
+			          apikey: SUPABASE_KEY,
+			          Authorization: `Bearer ${SUPABASE_KEY}`
+			        },
+			        body: JSON.stringify({ score: finalScore })
+			      });
+          showFireworks(window.innerWidth / 2, window.innerHeight / 2);
+        } else if (data.length === 0) {
+          await fetch(`${SUPABASE_URL}/rest/v1/match_scores`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              apikey: SUPABASE_KEY,
+              Authorization: `Bearer ${SUPABASE_KEY}`,
+              Prefer: "return=representation"
+            },
+            body: JSON.stringify({ uuid, nickname, school, score: finalScore })
+          });
+          showFireworks(window.innerWidth / 2, window.innerHeight / 2);
+        }
+      } catch (e) {
+        console.error("점수 저장 오류:", e);
+      }
+      
+      loadLeaderboard();
+      loadMySchoolRank();
+      loadSchoolRank();
+    }
+    function resetSelection() {
+      firstCard = null;
+      secondCard = null;
+      lock = false;
+    }
+
+    async function loadLeaderboard() {
+      const uuid = getUUID();
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/match_scores_with_rank?order=score.asc&limit=10`, {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`
+        }
+      });
+      const topScores = await res.json();
+
+      const allRes = await fetch(`${SUPABASE_URL}/rest/v1/match_scores_with_rank?order=score.asc`, {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`
+        }
+      });
+      const allScores = await allRes.json();
+      const myIndex = allScores.findIndex(entry => entry.uuid === uuid);
+
+      const rankBody = document.getElementById("rank-body");
+      rankBody.innerHTML = "";
+
+      topScores.forEach(entry => {
+        const row = document.createElement("tr");
+        if (entry.uuid === uuid) row.classList.add("my-row");
+        row.innerHTML = `<td>${entry.rank}</td><td>${entry.nickname}</td><td>${entry.school}</td><td>${entry.score.toFixed(2)}s</td>`;
+        rankBody.appendChild(row);
+      });
+
+      if (myIndex >= 10) {
+        const entry = allScores[myIndex];
+        const row = document.createElement("tr");
+        row.classList.add("my-row");
+        row.innerHTML = `<td>${entry.rank}</td><td>${entry.nickname}</td><td>${entry.school}</td><td>${entry.score.toFixed(2)}s</td>`;
+        rankBody.appendChild(row);
+      }
+    }
+
+    async function loadMySchoolRank() {
+      const school = localStorage.getItem("school");
+      const uuid = getUUID();
+
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/match_scores?school=eq.${encodeURIComponent(school)}&select=uuid,nickname,score&order=score.asc`, {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`
+        }
+      });
+      const data = await res.json();
+      const tbody = document.getElementById("my-school-body");
+      tbody.innerHTML = "";
+
+      let myRank = -1;
+      let myEntry = null;
+
+      data.forEach((entry, i) => {
+        if (i < 10) {
+          const row = document.createElement("tr");
+          if (entry.uuid === uuid) row.classList.add("my-row");
+          row.innerHTML = `<td>${i + 1}</td><td>${entry.nickname}</td><td>${entry.score.toFixed(2)}s</td>`;
+          tbody.appendChild(row);
+        }
+        if (entry.uuid === uuid) {
+          myRank = i + 1;
+          myEntry = entry;
+        }
+      });
+
+      if (myRank > 10 && myEntry) {
+        const row = document.createElement("tr");
+        row.classList.add("my-row");
+        row.innerHTML = `<td>${myRank}</td><td>${myEntry.nickname}</td><td>${myEntry.score.toFixed(2)}s</td>`;
+        tbody.appendChild(row);
+      }
+
+      document.getElementById("school-rank-title").innerHTML = `🎓 나의 학교 순위<br/><span style="font-size:1rem; color:#555">(${school})</span>`;
+    }
+
+    async function loadSchoolRank() {
+      const mySchool = localStorage.getItem("school");
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/match_scores?select=school,score`, {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          Range: "0-999"
+        }
+      });
+
+      const data = await res.json();
+      const schoolMap = {};
+      data.forEach(({ school, score }) => {
+        if (!schoolMap[school]) schoolMap[school] = [];
+        schoolMap[school].push(score);
+      });
+
+      const totals = Object.entries(schoolMap).map(([school, scores]) => ({
+        school,
+        sum: Math.round(scores.reduce((a, b) => a + b, 0))
+      })).sort((a, b) => a.sum - b.sum);
+
+      const schoolBody = document.getElementById("school-body");
+      schoolBody.innerHTML = "";
+
+      let mySchoolRank = -1;
+      let mySchoolData = null;
+
+      totals.forEach((entry, i) => {
+        if (i < 10) {
+          const row = document.createElement("tr");
+          if (entry.school === mySchool) row.classList.add("my-row");
+          row.innerHTML = `<td>${i + 1}</td><td>${entry.school}</td><td>${entry.sum.toFixed(2)}s</td>`;
+          schoolBody.appendChild(row);
+        }
+        if (entry.school === mySchool) {
+          mySchoolRank = i + 1;
+          mySchoolData = entry;
+        }
+      });
+
+      if (mySchoolRank > 10 && mySchoolData) {
+        const row = document.createElement("tr");
+        row.classList.add("my-row");
+        row.innerHTML = `<td>${mySchoolRank}</td><td>${mySchoolData.school}</td><td>${mySchoolData.sum.toFixed(2)}s</td>`;
+        schoolBody.appendChild(row);
+      }
+    }
+
+    window.onload = () => {
+      updateHearts();
+      loadLeaderboard();
+      loadMySchoolRank();
+      loadSchoolRank();
+    };
+  </script>
+</body>
+</html>
